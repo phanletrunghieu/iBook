@@ -1,17 +1,21 @@
-*/config/development
-*/logs/log-*.php
-!*/logs/index.html
-*/cache/*
-!*/cache/index.html
-!*/cache/.htaccess
+# See https://help.github.com/ignore-files/ for more about ignoring files.
 
-user_guide_src/build/*
-user_guide_src/cilexer/build/*
-user_guide_src/cilexer/dist/*
-user_guide_src/cilexer/pycilexer.egg-info/*
+# dependencies
+/node_modules
 
-#codeigniter 3
-application/logs/*
-!application/logs/index.html
-!application/logs/.htaccess
-/vendor/
+# testing
+/coverage
+
+# production
+/build
+
+# misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
