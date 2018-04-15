@@ -1,0 +1,72 @@
+.home-page {
+  text-align: center; }
+  .home-page .home-background {
+    background-image: url("/images/romance.jpg"); }
+  .home-page .full-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    z-index: 0;
+    background-repeat: no-repeat;
+    background-position: top right;
+    background-color: #333;
+    background-size: cover; }
+  .home-page header {
+    margin-top: 10px;
+    position: relative; }
+  .home-page .logo span {
+    font-size: 18px;
+    font-weight: bold;
+    letter-spacing: -0.1px;
+    text-align: center;
+    color: white;
+    text-transform: uppercase;
+    display: inline-block;
+    vertical-align: middle; }
+  .home-page .logo img {
+    border-radius: 10px; }
+  .home-page .logo {
+    float: left;
+    object-fit: contain; }
+  .home-page .row {
+    clear: both; }
+  .home-page .title {
+    object-fit: contain;
+    font-size: 28px;
+    text-align: center;
+    color: #333;
+    line-height: 35px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    margin-top: 70px;
+    position: relative;
+    color: #fff;
+    margin-bottom: 30px; }
+  .home-page .title:before {
+    content: "";
+    background: url("/images/quotes-left.png") no-repeat top left;
+    display: block;
+    width: 30px;
+    height: 30px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-size: 100%; }
+  .home-page .title:after {
+    content: "";
+    background: url("/images/quotes-right.png") no-repeat top left;
+    display: block;
+    width: 30px;
+    height: 30px;
+    position: absolute;
+    top: 0;
+    right: 5px;
+    background-size: 100%; }
+  .home-page .sub-title {
+    font-size: 15px;
+    text-align: center;
+    color: #fff;
+    margin-bottom: 35px;
+    font-weight: normal; }

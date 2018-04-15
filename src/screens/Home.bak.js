@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import browserHistory from "../utils/browserHistory";
-import GoogleDriveAPI from '../utils/google-drive-api';
+import GoogleDriveAPI from '../api/GoogleDriveAPI';
 
 class HomeScreen extends Component {
 

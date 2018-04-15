@@ -3,13 +3,18 @@ var cacheName = 'weatherPWA-final-2';
 var filesToCache = [
   '/',
   '/index.html',
-  '/static/css/main.460d3171.css',
-  '/static/js/main.ded56223.js',
-  '/static/bootstrap-4.0.0-dist/css/bootstrap.min.css',
-  '/static/bootstrap-4.0.0-dist/js/bootstrap.min.js',
-  '/static/fontawesome-free-5.0.8/css/fontawesome-all.min.css',
-  '/static/jquery-3.2.1/jquery.min.js',
-  '/static/popper-1.12.9/popper.min.js',
+  '/static/css/main.ad94b747.css',
+  '/static/js/main.bd0d4787.js',
+  '/lib/bootstrap-4.0.0-dist/css/bootstrap.min.css',
+  '/lib/bootstrap-4.0.0-dist/js/bootstrap.min.js',
+  '/lib/fontawesome-free-5.0.8/css/fontawesome-all.min.css',
+  '/lib/jquery-3.2.1/jquery.min.js',
+  '/lib/popper-1.12.9/popper.min.js',
+  '/images/default-avatar.png',
+  '/images/logo.png',
+  '/images/quotes-left.png',
+  '/images/quotes-right.png',
+  '/images/romance.jpg',
 ];
 
 self.addEventListener('install', function(e) {
