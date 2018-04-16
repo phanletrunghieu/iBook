@@ -4,7 +4,7 @@ var filesToCache = [
   '/',
   '/index.html',
   '/static/css/main.ad94b747.css',
-  '/static/js/main.bd0d4787.js',
+  '/static/js/main.e059cf00.js',
   '/lib/bootstrap-4.0.0-dist/css/bootstrap.min.css',
   '/lib/bootstrap-4.0.0-dist/js/bootstrap.min.js',
   '/lib/fontawesome-free-5.0.8/css/fontawesome-all.min.css',
@@ -102,9 +102,39 @@ self.addEventListener('push', function(event) {
 
 self.addEventListener('sync', function(event) {
   console.log('Sync event fired!', event);
-  if (event.tag == 'myFirstSync') {
-    event.waitUntil(()=>{
+  if (event.tag == "myFirstSync") {
+    event.waitUntil(new Promise(function(resolve, reject) {
       console.log("Start sync...");
-    });
+
+      if(!self.token){
+        resolve();
+      }
+
+      var url="https://www.googleapis.com/drive/v3/files?"
+            +"q="+encodeURI("(name contains '.ibook' or name contains '.iBook') and trashed = false and mimeType != 'application/vnd.google-apps.folder'")
+            +"&fields="+encodeURI("files(id, name, mimeType, iconLink, description, properties, modifiedTime, size, webContentLink, webViewLink)");
+
+      fetch(url, {
+        cache: 'no-cache',
+        method: 'GET',
+        headers: {
+          'Authorization': self.token.token_type + " " + self.token.access_token,
+          'content-type': 'application/json',
+        },
+      })
+      .then(response => response.json())
+      .then(resJSON=>{
+        console.log(resJSON);
+        resolve(true);
+      })
+    }));
   }
+});
+
+self.addEventListener('message', function(event){
+  var data=event.data;
+  if(data.type === 'token'){
+    self.token=data.data;
+  }
+  console.log("SW Received Message: " + event.data);
 });

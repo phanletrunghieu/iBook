@@ -4,6 +4,7 @@ import Drawer from 'material-ui/Drawer';
 import IconButton from 'material-ui/IconButton';
 import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
+import RaisedButton from 'material-ui/RaisedButton';
 
 import NavigationMenuIcon from 'material-ui/svg-icons/navigation/menu';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
@@ -34,14 +35,10 @@ class BookManagerScreen extends Component {
 
     this.toggleDrawer = this.toggleDrawer.bind(this);
     this.updateSigninStatus = this.updateSigninStatus.bind(this);
-
-    this.loadListFile = this.loadListFile.bind(this);
-    this.onClickNewFile = this.onClickNewFile.bind(this);
+    this.sync = this.sync.bind();
   }
 
   componentDidMount() {
-    this.timerID = setInterval(() => this.loadListFile(), 1000);
-
     GoogleDriveAPI.addLibrary(()=>{
       console.log('added gapi');
       GoogleDriveAPI.handleClientLoad(this.updateSigninStatus)
@@ -55,6 +52,19 @@ class BookManagerScreen extends Component {
   updateSigninStatus(isSignedIn){
     if (isSignedIn) {
       console.log("sign in");
+
+      //send token to serviceWorker
+      if('serviceWorker' in navigator){
+        var token=window.gapi.auth.getToken();
+        navigator.serviceWorker.ready.then(()=>{
+          navigator.serviceWorker.controller.postMessage({
+            type: 'token',
+            data: token,
+          });
+        });
+      }
+
+      //save data in localStorage
       var basicProfile=window.gapi.auth2.getAuthInstance().currentUser.get().getBasicProfile();
       var user_id=basicProfile.getId();
       var user_name=basicProfile.getName();
@@ -85,28 +95,19 @@ class BookManagerScreen extends Component {
     }
   }
 
-  loadListFile(){
-    // if(window.gapi && window.gapi.client && window.gapi.client.drive){
-    //   GoogleDriveAPI.listFiles()
-    //   .then((response) => {
-    //     console.log(response);
-    //     if (response.status === 200) {
-    //       this.setState({list_files: response.result.files});
-    //       clearInterval(this.timerID);
-    //     }
-    //   });
-    // }
-  }
-
-  onClickNewFile(){
-    GoogleDriveAPI.createFile(this.state.newFileName)
-    .then(response=>{
-      console.log(response)
-      var list_files = this.state.list_files;
-      list_files.push(response.result);
-      list_files.sort((a, b)=>a.name < b.name)
-      this.setState({list_files});
-    });
+  sync(){
+    if ('serviceWorker' in navigator && 'SyncManager' in window) {
+      navigator.serviceWorker.ready.then(function(reg) {
+        return reg.sync.register('myFirstSync');
+      }).catch(function() {
+        // system was unable to register for a sync,
+        // this could be an OS-level restriction
+        console.log('not support sync');
+      });
+    } else {
+      // serviceworker/sync not supported
+      console.log('not support sync');
+    }
   }
 
   render() {
@@ -163,6 +164,8 @@ class BookManagerScreen extends Component {
           <MenuItem leftIcon={<SettingsIcon/>}>Settings</MenuItem>
           <MenuItem leftIcon={<InfoIcon/>}>About</MenuItem>
         </Drawer>
+
+        <RaisedButton label="Primary" primary={true} onClick={this.sync}/>
       </div>
     );
   }
