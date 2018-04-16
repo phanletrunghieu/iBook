@@ -9,7 +9,7 @@ iBook is an awesome tool that provides an environment to write books in anywhere
 ## Scope Description
 ### Includes
 - Flexible text editor in multi-platform
-- Can use offline
+- Available offline
 - Using PWA (Progressive Web Apps)
 - Store books in Google Drive (gapi)
 - Auto sync data
