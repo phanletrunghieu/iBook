@@ -1,3 +1,5 @@
+importScripts("/lib/localForage/localforage.min.js");
+
 var dataCacheName = 'weatherData-v2';
 var cacheName = 'weatherPWA-final-2';
 var filesToCache = [
@@ -10,12 +12,15 @@ var filesToCache = [
   '/lib/fontawesome-free-5.0.8/css/fontawesome-all.min.css',
   '/lib/jquery-3.2.1/jquery.min.js',
   '/lib/popper-1.12.9/popper.min.js',
+  '/lib/localForage/localforage.min.js',
   '/images/default-avatar.png',
   '/images/logo.png',
   '/images/quotes-left.png',
   '/images/quotes-right.png',
   '/images/romance.jpg',
 ];
+const KEY_LIST_BOOK = 'list_books';
+const DATA_FOLDER = "iBookData";
 
 self.addEventListener('install', function(e) {
   console.log('[ServiceWorker] Install');
@@ -104,29 +109,60 @@ self.addEventListener('sync', function(event) {
   console.log('Sync event fired!', event);
   if (event.tag == "myFirstSync") {
     event.waitUntil(new Promise(function(resolve, reject) {
-      console.log("Start sync...");
-
       if(!self.token){
+        //chưa đăng nhập
         resolve();
       }
 
-      var url="https://www.googleapis.com/drive/v3/files?"
-            +"q="+encodeURI("(name contains '.ibook' or name contains '.iBook') and trashed = false and mimeType != 'application/vnd.google-apps.folder'")
-            +"&fields="+encodeURI("files(id, name, mimeType, iconLink, description, properties, modifiedTime, size, webContentLink, webViewLink)");
-
-      fetch(url, {
-        cache: 'no-cache',
-        method: 'GET',
-        headers: {
-          'Authorization': self.token.token_type + " " + self.token.access_token,
-          'content-type': 'application/json',
+      console.log("Start sync...");
+      setLocalFile([
+        {
+          id: "1523901522723",
+          name: "Book 1",
+          content: "Hello, tôi là book 1",
+          isNew: true,
+          isSynced: false,
         },
-      })
-      .then(response => response.json())
-      .then(resJSON=>{
-        console.log(resJSON);
-        resolve(true);
-      })
+        {
+          id: "1523901522728",
+          name: "Book 2",
+          content: "Hello, tôi là book 2",
+          isNew: true,
+          isSynced: false,
+        }
+      ]);
+
+      var list_promise=[];
+      //local file
+      list_promise.push(getLocalFile());
+      //remote file
+      list_promise.push(getRemoteFile());
+
+      Promise.all(list_promise)
+      .then(results=>{
+        var localFiles = results[0] || [];
+        var remoteFiles = results[1] || [];
+        localFiles.forEach(file=>{
+          console.log(file);
+          if (file.isNew) {
+            // file mới tạo
+            getAppDataFolder().then(folder=>{
+              return newRemoteFile(file.name, "application/vnd.google-apps.document", folder.id);
+            })
+            .then(createdFile=>{
+              // update nội dung
+              updateRemoteFileContent(createdFile.id, file.content);
+            });
+          } else if (!file.isSynced) {
+            // file đã bị thay đổi => cần đồng bộ
+
+          }
+        });
+        console.log("local", localFile);
+        console.log("remote", remoteFile);
+      }).catch(error=>reject(error));
+
+      resolve();
     }));
   }
 });
@@ -135,6 +171,155 @@ self.addEventListener('message', function(event){
   var data=event.data;
   if(data.type === 'token'){
     self.token=data.data;
+
+    //tạo DATA_FOLDER để lưu sách
+    getAppDataFolder();
   }
-  console.log("SW Received Message: " + event.data);
+  console.log("SW Received Message: ", event.data);
 });
+
+/**
+ * Cấu trúc 1 sách
+ * @property id {string} - id sách (nếu đã được đồng bộ ? current_timestamp : google drive id)
+ * @property name {string} - tên sách
+ * @property content {string} - nội dung sách (lưu dạng html)
+ * @property isNew {bool} - sách vừa mới tạo, chưa có trên drive
+ * @property isSynced {bool} - sách đã được đồng bộ chưa
+ */
+
+/**
+ * Lấy sách từ local
+ */
+function getLocalFile() {
+  return new Promise(function(resolve, reject) {
+    localforage.getItem(KEY_LIST_BOOK)
+    .then(list_books=>{
+      resolve(JSON.parse(list_books) || []);
+    })
+    .catch(err=>reject(err));
+  });
+}
+
+/**
+ * Lưu sách vào local
+ */
+function setLocalFile(list_books) {
+  return localforage.setItem(KEY_LIST_BOOK, JSON.stringify(list_books));
+}
+
+/**
+ * Lấy sách từ Google Drive
+ */
+function getRemoteFile() {
+  var url="https://www.googleapis.com/drive/v3/files?"
+        +"q="+encodeURI("(name contains '.ibook' or name contains '.iBook') and trashed = false and mimeType != 'application/vnd.google-apps.folder'")
+        +"&fields="+encodeURI("files(id, name, mimeType, iconLink, description, properties, modifiedTime, size, webContentLink, webViewLink)");
+
+  return fetch(url, {
+    cache: 'no-cache',
+    method: 'GET',
+    headers: {
+      'Authorization': self.token.token_type + " " + self.token.access_token,
+      'content-type': 'application/json',
+    },
+  })
+  .then(response => response.json());
+}
+
+/**
+ * Tạo thêm 1 sách và lưu ở local
+ */
+function newLocalBook(id, name, content) {
+  return getLocalFile()
+  .then(list_books=>{
+    list_books.push({
+      id: id,
+      name: name,
+      content: content,
+      isNew: true,
+      isSynced: false
+    });
+
+    return setLocalFile(list_books);
+  });
+}
+
+/**
+ * Tạo 1 file/folder mới trên Google Drive
+ */
+function newRemoteFile(name, mimeType="application/vnd.google-apps.document", parent_id=null) {
+  return new Promise(function(resolve, reject) {
+    console.log("Tạo file", name);
+    var url="https://www.googleapis.com/drive/v3/files?"
+          +"fields="+encodeURI("id, name, mimeType, iconLink, description, properties, modifiedTime, size, webContentLink, webViewLink");
+    fetch(url, {
+      cache: 'no-cache',
+      method: 'POST',
+      headers: {
+        'Authorization': self.token.token_type + " " + self.token.access_token,
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        'name' : name,
+        'mimeType' : mimeType,
+        'parents': parent_id ? [parent_id] : null,
+      }),
+    })
+    .then(response => response.json())
+    .then(response=>{
+      console.log(response);
+      return resolve(response);
+    })
+    .catch(err=>reject(err.message || err));
+  });
+}
+
+/**
+ * Lấy folder để lưu sách trên Google Drive
+ */
+function getAppDataFolder() {
+  return new Promise(function(resolve, reject) {
+    console.log("Lấy DATA_FOLDER");
+    var url="https://www.googleapis.com/drive/v3/files?"
+          +"q="+encodeURI("name = '" + DATA_FOLDER + "' and trashed = false and mimeType = 'application/vnd.google-apps.folder'")
+          +"&fields="+encodeURI("files(id, name, mimeType, iconLink, description, properties, modifiedTime, size, webContentLink, webViewLink)");
+    fetch(url, {
+      cache: 'no-cache',
+      method: 'GET',
+      headers: {
+        'Authorization': self.token.token_type + " " + self.token.access_token,
+        'content-type': 'application/json',
+      },
+    })
+    .then(response => response.json())
+    .then(response => {
+      console.log(response);
+      if(Array.isArray(response.files) && response.files.length > 0){
+        return resolve(response.files[0]);
+      }
+
+      //don not find data folder
+      console.log("Không tìm thấy DATA_FOLDER");
+      return newRemoteFile(DATA_FOLDER, 'application/vnd.google-apps.folder');
+    })
+    .then(folder=>resolve(folder))
+    .catch(err=>reject(err));
+  });
+}
+
+/**
+ * Update file content
+ */
+function updateRemoteFileContent(fileId, content) {
+  console.log("Cập nhật nội dung file", fileId, content);
+  return fetch("https://www.googleapis.com/upload/drive/v3/files/" + fileId + "?uploadType=media", {
+    cache: 'no-cache',
+    method: 'PATCH',
+    headers: {
+      'Authorization': self.token.token_type + " " + self.token.access_token,
+      'content-type': 'application/json',
+    },
+    body: content,
+  })
+  .then(response => response.json());
+}
