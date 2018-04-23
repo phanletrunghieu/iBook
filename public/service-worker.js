@@ -120,15 +120,13 @@ self.addEventListener('sync', function(event) {
           id: "1523901522723",
           name: "Book 1",
           content: "Hello, tôi là book 1",
-          isNew: true,
-          isSynced: false,
+          status_id: 1,
         },
         {
           id: "1523901522728",
           name: "Book 2",
           content: "Hello, tôi là book 2",
-          isNew: true,
-          isSynced: false,
+          status_id: 1,
         }
       ]);
 
@@ -144,7 +142,7 @@ self.addEventListener('sync', function(event) {
         var remoteFiles = results[1] || [];
         localFiles.forEach(file=>{
           console.log(file);
-          if (file.isNew) {
+          if (file.status_id === 1) {
             // file mới tạo
             getAppDataFolder().then(folder=>{
               return newRemoteFile(file.name, "application/vnd.google-apps.document", folder.id);
@@ -153,7 +151,7 @@ self.addEventListener('sync', function(event) {
               // update nội dung
               updateRemoteFileContent(createdFile.id, file.content);
             });
-          } else if (!file.isSynced) {
+          } else if (!file.status_id === 2) {
             // file đã bị thay đổi => cần đồng bộ
 
           }
@@ -183,8 +181,7 @@ self.addEventListener('message', function(event){
  * @property id {string} - id sách (nếu đã được đồng bộ ? current_timestamp : google drive id)
  * @property name {string} - tên sách
  * @property content {string} - nội dung sách (lưu dạng html)
- * @property isNew {bool} - sách vừa mới tạo, chưa có trên drive
- * @property isSynced {bool} - sách đã được đồng bộ chưa
+ * @property status_id {int} - 1: mới tạo, 2: bị thay đổi nội dung, 3: xoá, 4: đã đồng bộ trên drive
  */
 
 /**
@@ -224,24 +221,6 @@ function getRemoteFile() {
     },
   })
   .then(response => response.json());
-}
-
-/**
- * Tạo thêm 1 sách và lưu ở local
- */
-function newLocalBook(id, name, content) {
-  return getLocalFile()
-  .then(list_books=>{
-    list_books.push({
-      id: id,
-      name: name,
-      content: content,
-      isNew: true,
-      isSynced: false
-    });
-
-    return setLocalFile(list_books);
-  });
 }
 
 /**

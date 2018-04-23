@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Switch, Route} from 'react-router-dom';
 import AppBar from 'material-ui/AppBar';
 import Drawer from 'material-ui/Drawer';
 import IconButton from 'material-ui/IconButton';
@@ -12,6 +13,9 @@ import AccountCircleIcon from 'material-ui/svg-icons/action/account-circle';
 import SettingsIcon from 'material-ui/svg-icons/action/settings';
 import InfoIcon from 'material-ui/svg-icons/action/info';
 import ExitToAppIcon from 'material-ui/svg-icons/action/exit-to-app';
+
+import ListBookScreen from './ListBook';
+import BookEditorScreen from './BookEditor';
 
 import config from '../../config';
 
@@ -166,6 +170,12 @@ class BookManagerScreen extends Component {
         </Drawer>
 
         <RaisedButton label="Primary" primary={true} onClick={this.sync}/>
+
+        <Switch>
+          <Route exact path="/app" render={(props)=><ListBookScreen {...props} />} />
+          <Route exact path="/app/book/edit/:bookId" render={(props)=><BookEditorScreen {...props} />} />
+        </Switch>
+
       </div>
     );
   }
