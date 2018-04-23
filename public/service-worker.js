@@ -5,8 +5,8 @@ var cacheName = 'weatherPWA-final-2';
 var filesToCache = [
   '/',
   '/index.html',
-  '/static/css/main.ad94b747.css',
-  '/static/js/main.e059cf00.js',
+  '/static/css/main.82807508.css',
+  '/static/js/main.5e15cd88.js',
   '/lib/bootstrap-4.0.0-dist/css/bootstrap.min.css',
   '/lib/bootstrap-4.0.0-dist/js/bootstrap.min.js',
   '/lib/fontawesome-free-5.0.8/css/fontawesome-all.min.css',
@@ -115,20 +115,6 @@ self.addEventListener('sync', function(event) {
       }
 
       console.log("Start sync...");
-      setLocalFile([
-        {
-          id: "1523901522723",
-          name: "Book 1",
-          content: "Hello, tôi là book 1",
-          status_id: 1,
-        },
-        {
-          id: "1523901522728",
-          name: "Book 2",
-          content: "Hello, tôi là book 2",
-          status_id: 1,
-        }
-      ]);
 
       var list_promise=[];
       //local file
@@ -228,6 +214,7 @@ function getRemoteFile() {
  */
 function newRemoteFile(name, mimeType="application/vnd.google-apps.document", parent_id=null) {
   return new Promise(function(resolve, reject) {
+    name = name + ".ibook";
     console.log("Tạo file", name);
     var url="https://www.googleapis.com/drive/v3/files?"
           +"fields="+encodeURI("id, name, mimeType, iconLink, description, properties, modifiedTime, size, webContentLink, webViewLink");
