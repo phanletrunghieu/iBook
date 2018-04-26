@@ -6,7 +6,7 @@ var filesToCache = [
   '/',
   '/index.html',
   '/static/css/main.82807508.css',
-  '/static/js/main.5e15cd88.js',
+  '/static/js/main.8806800a.js',
   '/lib/bootstrap-4.0.0-dist/css/bootstrap.min.css',
   '/lib/bootstrap-4.0.0-dist/js/bootstrap.min.js',
   '/lib/fontawesome-free-5.0.8/css/fontawesome-all.min.css',
@@ -122,29 +122,52 @@ self.addEventListener('sync', function(event) {
       //remote file
       list_promise.push(getRemoteFile());
 
+      var localFiles, remoteFiles;
+
       Promise.all(list_promise)
       .then(results=>{
-        var localFiles = results[0] || [];
-        var remoteFiles = results[1] || [];
+        localFiles = results[0] || [];
+        remoteFiles = results[1] || [];
+
+        console.log("local", localFiles);
+        console.log("remote", remoteFiles);
+
+        //đấy file lên google drive
+        var list_promise_push = [];
+
         localFiles.forEach(file=>{
-          console.log(file);
           if (file.status_id === 1) {
             // file mới tạo
-            getAppDataFolder().then(folder=>{
-              return newRemoteFile(file.name, "application/vnd.google-apps.document", folder.id);
+            var p=getAppDataFolder().then(folder=>{
+              return newRemoteFile(file.name + ".ibook", "application/vnd.google-apps.document", folder.id);
             })
             .then(createdFile=>{
-              // update nội dung
-              updateRemoteFileContent(createdFile.id, file.content);
-            });
-          } else if (!file.status_id === 2) {
-            // file đã bị thay đổi => cần đồng bộ
+              setBookSynced(file.id, createdFile.id);
 
+              // update nội dung
+              return updateRemoteFileContent(createdFile.id, file.content);
+            });
+
+            list_promise_push.push(p);
+          } else if (file.status_id === 2) {
+            // file đã bị thay đổi => cần đồng bộ
+            var p=updateRemoteFileContent(file.id, file.content);
+            list_promise_push.push(p);
+          } else if (file.status_id === 3) {
+            //xoá
           }
         });
-        console.log("local", localFile);
-        console.log("remote", remoteFile);
-      }).catch(error=>reject(error));
+
+        return Promise.all(list_promise_push);
+      })
+      .then(async ()=>{
+        //lấy file từ google drive về
+        for (var i = 0; i < remoteFiles.length; i++) {
+          console.log(i);
+          await downloadFile(remoteFiles[i].id, remoteFiles[i].name, "", 4);
+        }
+      })
+      .catch(error=>reject(error));
 
       resolve();
     }));
@@ -191,6 +214,65 @@ function setLocalFile(list_books) {
 }
 
 /**
+ * Thêm 1 sách vào local storage
+ */
+function downloadFile(id, name, content="", status_id=1) {
+  return new Promise(function(resolve, reject) {
+    var list_books, fileIndex;
+
+    getLocalFile()
+    .then(l=>{
+      list_books = l;
+
+      var index=list_books.findIndex(book=>book.id===id);
+      if(index !== -1){
+        fileIndex = index;
+        return Promise.resolve();
+      }
+      var indexExt = name.indexOf('.ibook');
+      if(indexExt !== -1){
+        name = name.substring(0, indexExt);
+      }
+
+      list_books.push({
+        id: id,
+        name: name,
+        content: content,
+        status_id: status_id,
+      });
+
+      fileIndex = list_books.length-1;
+
+      return Promise.resolve();
+    })
+    .then(()=>{
+      return getRemoteFileContent(list_books[fileIndex].id);
+    })
+    .then(content=>{
+      console.log(content);
+      list_books[fileIndex].content = content;
+      return setLocalFile(list_books);
+    })
+    .then(()=>resolve())
+    .catch(err=>reject(err));
+  });
+}
+
+/**
+ * Thay đổi status_id của file
+ */
+function setBookSynced(id, driveId) {
+  return getLocalFile()
+  .then(list_books=>{
+    var index=list_books.findIndex(book=>book.id===id);
+    list_books[index].id=driveId;
+    list_books[index].status_id = 4;
+
+    return setLocalFile(list_books);
+  });
+}
+
+/**
  * Lấy sách từ Google Drive
  */
 function getRemoteFile() {
@@ -198,15 +280,51 @@ function getRemoteFile() {
         +"q="+encodeURI("(name contains '.ibook' or name contains '.iBook') and trashed = false and mimeType != 'application/vnd.google-apps.folder'")
         +"&fields="+encodeURI("files(id, name, mimeType, iconLink, description, properties, modifiedTime, size, webContentLink, webViewLink)");
 
-  return fetch(url, {
-    cache: 'no-cache',
-    method: 'GET',
-    headers: {
-      'Authorization': self.token.token_type + " " + self.token.access_token,
-      'content-type': 'application/json',
-    },
-  })
-  .then(response => response.json());
+  return new Promise(function(resolve, reject) {
+    fetch(url, {
+      cache: 'no-cache',
+      method: 'GET',
+      headers: {
+        'Authorization': self.token.token_type + " " + self.token.access_token,
+        'content-type': 'application/json',
+      },
+    })
+    .then(response => response.json())
+    .then(response => {
+      resolve(response.files || []);
+    })
+    .catch(err=>reject(err));
+  });
+}
+
+/**
+ * Lấy nội dung sách từ Google Drive
+ */
+function getRemoteFileContent(fileId) {
+  var url="https://www.googleapis.com/drive/v3/files/" + fileId + "/export?"
+        +"mimeType="+encodeURI("text/plain");
+
+  return new Promise(function(resolve, reject) {
+    fetch(url, {
+      cache: 'no-cache',
+      method: 'GET',
+      headers: {
+        'Authorization': self.token.token_type + " " + self.token.access_token,
+        'content-type': 'application/json',
+      },
+    })
+    .then(response => {
+      if(response.ok)
+        return response.text();
+      else
+        return Promise.reject("Fail");
+    })
+    .then(response => {
+      console.log(response);
+      resolve(response);
+    })
+    .catch(err=>reject(err));
+  });
 }
 
 /**
@@ -214,7 +332,6 @@ function getRemoteFile() {
  */
 function newRemoteFile(name, mimeType="application/vnd.google-apps.document", parent_id=null) {
   return new Promise(function(resolve, reject) {
-    name = name + ".ibook";
     console.log("Tạo file", name);
     var url="https://www.googleapis.com/drive/v3/files?"
           +"fields="+encodeURI("id, name, mimeType, iconLink, description, properties, modifiedTime, size, webContentLink, webViewLink");

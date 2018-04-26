@@ -8,6 +8,7 @@ import MenuItem from 'material-ui/MenuItem';
 import RaisedButton from 'material-ui/RaisedButton';
 
 import NavigationMenuIcon from 'material-ui/svg-icons/navigation/menu';
+import ArrowBackIcon from 'material-ui/svg-icons/navigation/arrow-back';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import AccountCircleIcon from 'material-ui/svg-icons/action/account-circle';
 import SettingsIcon from 'material-ui/svg-icons/action/settings';
@@ -21,6 +22,9 @@ import config from '../../config';
 
 import GoogleDriveAPI from '../../api/GoogleDriveAPI';
 import {setUserInfo, clearUserInfo, getUID, getName, getEmail, getAvatar} from '../../api/UserAPI';
+
+import browserHistory from "../../utils/browserHistory";
+import {sync} from "../../utils/helper";
 
 import './BookManager.css';
 
@@ -39,7 +43,6 @@ class BookManagerScreen extends Component {
 
     this.toggleDrawer = this.toggleDrawer.bind(this);
     this.updateSigninStatus = this.updateSigninStatus.bind(this);
-    this.sync = this.sync.bind();
   }
 
   componentDidMount() {
@@ -47,6 +50,11 @@ class BookManagerScreen extends Component {
       console.log('added gapi');
       GoogleDriveAPI.handleClientLoad(this.updateSigninStatus)
     });
+
+    sync();
+    setInterval(function () {
+      sync();
+    }, 5*60*1000);
   }
 
   toggleDrawer(){
@@ -99,32 +107,21 @@ class BookManagerScreen extends Component {
     }
   }
 
-  sync(){
-    if ('serviceWorker' in navigator && 'SyncManager' in window) {
-      navigator.serviceWorker.ready.then(function(reg) {
-        return reg.sync.register('myFirstSync');
-      }).catch(function() {
-        // system was unable to register for a sync,
-        // this could be an OS-level restriction
-        console.log('not support sync');
-      });
-    } else {
-      // serviceworker/sync not supported
-      console.log('not support sync');
-    }
-  }
-
   render() {
+    var is_home = (this.props.location.pathname==="/app" || this.props.location.pathname==="/app/");
     return (
       <div>
         <AppBar
           title={config.app_name}
           //onTitleClick={handleClick}
+          style={{position: 'fixed', top: 0}}
           iconElementLeft={
             <IconButton
-              onClick={this.toggleDrawer}
+              onClick={is_home ? this.toggleDrawer : ()=>browserHistory.goBack()}
             >
-              <NavigationMenuIcon/>
+              {
+                is_home ? <NavigationMenuIcon/> : <ArrowBackIcon />
+              }
             </IconButton>
           }
           iconElementRight={
@@ -169,12 +166,12 @@ class BookManagerScreen extends Component {
           <MenuItem leftIcon={<InfoIcon/>}>About</MenuItem>
         </Drawer>
 
-        <RaisedButton label="Primary" primary={true} onClick={this.sync}/>
-
-        <Switch>
-          <Route exact path="/app" render={(props)=><ListBookScreen {...props} />} />
-          <Route exact path="/app/book/edit/:bookId" render={(props)=><BookEditorScreen {...props} />} />
-        </Switch>
+        <div style={{marginTop: 64}}>
+          <Switch>
+            <Route exact path="/app" render={(props)=><ListBookScreen {...props} />} />
+            <Route exact path="/app/book/edit/:bookId" render={(props)=><BookEditorScreen {...props} />} />
+          </Switch>
+        </div>
 
       </div>
     );

@@ -11,6 +11,8 @@ import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 
 import AddIcon from 'material-ui/svg-icons/content/add';
 
+import browserHistory from "../../../utils/browserHistory";
+
 import {addBook, getBooksData} from "../../../api/BookAPI";
 
 class ListBookScreen extends Component {
@@ -26,13 +28,20 @@ class ListBookScreen extends Component {
 
     this.onAddNewBook = this.onAddNewBook.bind(this);
     this.loadData = this.loadData.bind(this);
+    this.onEditBook = this.onEditBook.bind(this);
   }
 
   componentDidMount() {
     this.loadData();
+
+    var that=this;
+    setInterval(function () {
+      that.loadData();
+    }, 30*1000);
   }
 
   loadData(){
+    console.log("loadData");
     getBooksData()
     .then(list_books=>{
       this.setState({list_books});
@@ -49,6 +58,10 @@ class ListBookScreen extends Component {
 
       this.loadData();
     });
+  }
+
+  onEditBook(book){
+    browserHistory.push('/app/book/edit/'+book.id);
   }
 
   render() {
@@ -94,6 +107,7 @@ class ListBookScreen extends Component {
                     <MenuItem primaryText="Delete" />
                   </IconMenu>
                 }
+                onClick={()=>this.onEditBook(book)}
               />
             ))
           }
