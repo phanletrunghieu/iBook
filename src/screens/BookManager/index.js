@@ -118,64 +118,67 @@ class BookManagerScreen extends Component {
           iconElementLeft={
             <IconButton
               onClick={is_home ? this.toggleDrawer : ()=>browserHistory.goBack()}
-            >
+              >
               {
                 is_home ? <NavigationMenuIcon/> : <ArrowBackIcon />
-              }
-            </IconButton>
-          }
-          iconElementRight={
-            <IconMenu
-              iconButtonElement={
-                <IconButton><MoreVertIcon /></IconButton>
-              }
-              targetOrigin={{horizontal: 'right', vertical: 'top'}}
-              anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+            }
+          </IconButton>
+        }
+        iconElementRight={
+          <IconMenu
+            iconButtonElement={
+              <IconButton><MoreVertIcon /></IconButton>
+            }
+            targetOrigin={{horizontal: 'right', vertical: 'top'}}
+            anchorOrigin={{horizontal: 'right', vertical: 'top'}}
             >
-              <MenuItem primaryText="Refresh" />
-              <MenuItem primaryText="Help" />
-              <MenuItem primaryText="Sign out" />
-            </IconMenu>
-          }
+            <MenuItem primaryText="Refresh" />
+            <MenuItem primaryText="Detail" />
+            <MenuItem primaryText="Edit" />
+            <MenuItem primaryText="Delete" />
+            <MenuItem primaryText="Help" />
+            <MenuItem primaryText="Sign out" />
+          </IconMenu>
+        }
         />
-        <Drawer
-          docked={false}
-          open={this.state.openDrawer}
-          onRequestChange={(openDrawer) => this.setState({openDrawer})}
-          className="drawer"
+      <Drawer
+        docked={false}
+        open={this.state.openDrawer}
+        onRequestChange={(openDrawer) => this.setState({openDrawer})}
+        className="drawer"
         >
-          <div className="header">
-            <div className="user-info">
-              <div className="avatar">
-                <img src={this.state.user_avatar} alt="User avatar" width="50" height="50" />
-              </div>
-              <div className="user-name">{this.state.user_name}</div>
+        <div className="header">
+          <div className="user-info">
+            <div className="avatar">
+              <img src={this.state.user_avatar} alt="User avatar" width="50" height="50" />
             </div>
+            <div className="user-name">{this.state.user_name}</div>
           </div>
-          {
-            !this.state.user_id ?
-            (
-              <MenuItem leftIcon={<AccountCircleIcon/>} onClick={GoogleDriveAPI.signIn}>Login Google Drive</MenuItem>
-            )
-            :
-            (
-              <MenuItem leftIcon={<ExitToAppIcon/>} onClick={GoogleDriveAPI.signOut}>Logout</MenuItem>
-            )
-          }
-          <MenuItem leftIcon={<SettingsIcon/>}>Settings</MenuItem>
-          <MenuItem leftIcon={<InfoIcon/>}>About</MenuItem>
-        </Drawer>
-
-        <div style={{marginTop: 64}}>
-          <Switch>
-            <Route exact path="/app" render={(props)=><ListBookScreen {...props} />} />
-            <Route exact path="/app/book/edit/:bookId" render={(props)=><BookEditorScreen {...props} />} />
-          </Switch>
         </div>
+        {
+          !this.state.user_id ?
+          (
+            <MenuItem leftIcon={<AccountCircleIcon/>} onClick={GoogleDriveAPI.signIn}>Login Google Drive</MenuItem>
+          )
+          :
+          (
+            <MenuItem leftIcon={<ExitToAppIcon/>} onClick={GoogleDriveAPI.signOut}>Logout</MenuItem>
+          )
+        }
+        <MenuItem leftIcon={<SettingsIcon/>}>Settings</MenuItem>
+        <MenuItem leftIcon={<InfoIcon/>}>About</MenuItem>
+      </Drawer>
 
+      <div style={{marginTop: 64}}>
+        <Switch>
+          <Route exact path="/app" render={(props)=><ListBookScreen {...props} />} />
+          <Route exact path="/app/book/edit/:bookId" render={(props)=><BookEditorScreen {...props} />} />
+        </Switch>
       </div>
-    );
-  }
+
+    </div>
+  );
+}
 }
 
 export default BookManagerScreen;
