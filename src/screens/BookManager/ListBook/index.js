@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {List, ListItem} from 'material-ui/List';
+import Avatar from 'material-ui/Avatar';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
@@ -14,6 +15,7 @@ import AddIcon from 'material-ui/svg-icons/content/add';
 import browserHistory from "../../../utils/browserHistory";
 
 import {addBook, getBooksData} from "../../../api/BookAPI";
+import {formatDate} from "../../../utils/helper"
 
 class ListBookScreen extends Component {
 
@@ -74,6 +76,16 @@ class ListBookScreen extends Component {
       dialogContentStyle: {
         width: 350,
         maxWidth: 'none',
+      },
+      listItem: {
+        height: 255,
+        paddingLeft: 50
+      },
+      leftAvatarOfListItem: {
+        borderRadius: 0,
+        height: 225,
+        width: 150,
+        marginRight: 300,
       }
     };
 
@@ -96,8 +108,16 @@ class ListBookScreen extends Component {
           {
             this.state.list_books.map(book=>(
               <ListItem
+                style={styles.listItem}
                 key={book.id}
                 primaryText={book.name}
+                secondaryText={ formatDate((new Date(book.id)).toString())}
+                rightAvatar={
+                  <Avatar
+                    src="images/cover.jpg"
+                    style={styles.leftAvatarOfListItem}
+                  />
+                }
                 rightIconButton={
                   <IconMenu
                     iconButtonElement={<IconButton><MoreVertIcon /></IconButton>}
