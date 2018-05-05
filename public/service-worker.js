@@ -189,10 +189,10 @@ self.addEventListener('message', function(event){
  * Cấu trúc 1 sách
  * @property id {string} - id sách (nếu đã được đồng bộ ? current_timestamp : google drive id)
  * @property name {string} - tên sách
- * @property content {string} - nội dung sách (lưu dạng html)
  * @property date_created {timestamp} - ngày tạo sách
  * @property date_modified {timestamp} - ngày chỉnh sách
  * @property status_id {int} - 1: mới tạo, 2: bị thay đổi nội dung, 3: xoá, 4: đã đồng bộ trên drive
+ * @property chapters {array} - chứa các chapter {id, name, content}
  */
 
 /**

@@ -1,4 +1,5 @@
 import localforage from 'localforage';
+import uuidv1 from 'uuid/v1';
 import {sync} from "../utils/helper";
 
 const KEY_BOOK = 'list_books';
@@ -6,13 +7,18 @@ const KEY_BOOK = 'list_books';
 /**
  * Cấu trúc 1 sách
  * @property id {string} - id sách (nếu đã được đồng bộ ? current_timestamp : google drive id)
+ * @property image {base64 string} - bìa sách
  * @property name {string} - tên sách
- * @property content {string} - nội dung sách (lưu dạng html)
  * @property date_created {timestamp} - ngày tạo sách
  * @property date_modified {timestamp} - ngày chỉnh sách
  * @property status_id {int} - 1: mới tạo, 2: bị thay đổi nội dung, 3: xoá, 4: đã đồng bộ trên drive
+ * @property chapters {array} - chứa các chapter {id, name, content}
  */
 
+
+/**
+ * Lấy tất cả sách
+ */
 export function getBooksData(){
   return new Promise(function(resolve, reject) {
     localforage.getItem(KEY_BOOK)
@@ -25,6 +31,9 @@ export function getBooksData(){
   });
 }
 
+/**
+ * Lấy sách theo id
+ */
 export function getBookByID(bookId) {
   return new Promise(function(resolve, reject) {
     getBooksData()
@@ -40,6 +49,9 @@ export function getBookByID(bookId) {
   });
 }
 
+/**
+ * Lưu dữ liệu
+ */
 export function setBooksData(list_books) {
   return new Promise(function(resolve, reject) {
     localforage.setItem(KEY_BOOK, JSON.stringify(list_books))
@@ -51,15 +63,22 @@ export function setBooksData(list_books) {
   });
 }
 
-export function addBook(name, content="") {
+/**
+ * Thêm 1 sách
+ */
+export function addBook(name) {
   return getBooksData()
   .then(list_books=>{
     var now = Date.now();
 
     list_books.push({
-      id: Date.now(),
+      id: uuidv1(),
       name: name,
-      content: content,
+      content: [{
+        id: uuidv1(),
+        name: "Chapter 1",
+        content: "",
+      }],
       date_created: now,
       date_modified: now,
       status_id: 1,
@@ -69,6 +88,9 @@ export function addBook(name, content="") {
   });
 }
 
+/**
+ * Xoá 1 sách
+ */
 export function deleteBook(id) {
   return getBooksData()
   .then(list_books=>{
@@ -79,11 +101,40 @@ export function deleteBook(id) {
   });
 }
 
-export function editContent(id, newContent) {
+/**
+ * Thay đổi tên chapter
+ */
+export function editChapterName(book_id, chapter_id, chapter_name) {
   return getBooksData()
   .then(list_books=>{
-    var index=list_books.findIndex(book=>book.id.toString() === id.toString());
-    list_books[index].content = newContent;
+    var book_index = list_books.findIndex(book=>book.id === book_id);
+    var book = list_books[book_index];
+
+    var chapter_index = book.chapters.findIndex(chapter=>chapter.id === chapter_id);
+
+    list_books[book_index].chapters[chapter_index].name = chapter_name;
+
+    list_books[index].date_modified = Date.now();
+    if(list_books[index].status_id!==1)
+      list_books[index].status_id = 2;
+
+    return setBooksData(list_books);
+  });
+}
+
+/**
+ * Chỉnh sửa nội dung của 1 chapter trong sách
+ */
+export function editContent(book_id, chapter_id, newContent) {
+  return getBooksData()
+  .then(list_books=>{
+    var book_index = list_books.findIndex(book=>book.id.toString() === book_id.toString());
+    var book = list_books[book_index];
+
+    var chapter_index = book.chapters.findIndex(chapter=>chapter.id===chapter_id);
+
+    list_books[book_index].chapters[chapter_index].content = newContent;
+
     list_books[index].date_modified = Date.now();
     if(list_books[index].status_id!==1)
       list_books[index].status_id = 2;
