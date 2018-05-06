@@ -74,7 +74,7 @@ export function addBook(name) {
     list_books.push({
       id: uuidv1(),
       name: name,
-      content: [{
+      chapters: [{
         id: uuidv1(),
         name: "Chapter 1",
         content: "",
