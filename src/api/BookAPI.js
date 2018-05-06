@@ -102,6 +102,28 @@ export function deleteBook(id) {
 }
 
 /**
+ * Thêm 1 chapter mới
+ */
+export function addChapter(book_id, chapter_name) {
+  return getBooksData()
+  .then(list_books=>{
+    var book_index = list_books.findIndex(book=>book.id === book_id);
+
+    list_books[book_index].chapters.push({
+      id: uuidv1(),
+      name: chapter_name,
+      content: "",
+    });
+
+    list_books[book_index].date_modified = Date.now();
+    if(list_books[book_index].status_id!==1)
+      list_books[book_index].status_id = 2;
+
+    return setBooksData(list_books);
+  });
+}
+
+/**
  * Thay đổi tên chapter
  */
 export function editChapterName(book_id, chapter_id, chapter_name) {
