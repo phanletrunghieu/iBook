@@ -114,9 +114,9 @@ export function editChapterName(book_id, chapter_id, chapter_name) {
 
     list_books[book_index].chapters[chapter_index].name = chapter_name;
 
-    list_books[index].date_modified = Date.now();
-    if(list_books[index].status_id!==1)
-      list_books[index].status_id = 2;
+    list_books[book_index].date_modified = Date.now();
+    if(list_books[book_index].status_id!==1)
+      list_books[book_index].status_id = 2;
 
     return setBooksData(list_books);
   });
@@ -135,9 +135,9 @@ export function editContent(book_id, chapter_id, newContent) {
 
     list_books[book_index].chapters[chapter_index].content = newContent;
 
-    list_books[index].date_modified = Date.now();
-    if(list_books[index].status_id!==1)
-      list_books[index].status_id = 2;
+    list_books[book_index].date_modified = Date.now();
+    if(list_books[book_index].status_id!==1)
+      list_books[book_index].status_id = 2;
 
     return setBooksData(list_books);
   });
