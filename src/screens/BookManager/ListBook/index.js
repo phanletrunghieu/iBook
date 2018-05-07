@@ -63,7 +63,7 @@ class ListBookScreen extends Component {
   }
 
   onEditBook(book){
-    browserHistory.push('/app/book/edit/'+book.id);
+    browserHistory.push('/app/book/chapter_list/'+book.id);
   }
 
   render() {
@@ -116,7 +116,12 @@ class ListBookScreen extends Component {
                 innerDivStyle={styles.listItemContainer}
                 key={book.id}
                 primaryText={<span style={styles.bookTitle}>{book.name}</span>}
-                secondaryText={ formatDate((new Date(book.id)).toString())}
+                secondaryText={
+                  ["Ngày tạo:" + "\u00A0\u00A0\u00A0" + formatDate((new Date(book.date_created)).toString()),
+                  <br />,
+                  "Ngày cập nhật gần nhất: " + formatDate((new Date(book.date_modified)).toString())]
+                }
+                secondaryTextLines={2}
                 leftAvatar={
                   <img
                     src={book.image}
