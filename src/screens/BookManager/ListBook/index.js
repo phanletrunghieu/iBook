@@ -79,13 +79,17 @@ class ListBookScreen extends Component {
       },
       listItem: {
         height: 255,
-        paddingLeft: 50
       },
-      leftAvatarOfListItem: {
-        borderRadius: 0,
+      listItemContainer: {
+        paddingLeft: 170
+      },
+      bookTitle:{
+        fontWeight: 700,
+        fontSize: "larger",
+      },
+      bookCover: {
         height: 225,
         width: 150,
-        marginRight: 300,
       }
     };
 
@@ -109,13 +113,14 @@ class ListBookScreen extends Component {
             this.state.list_books.map(book=>(
               <ListItem
                 style={styles.listItem}
+                innerDivStyle={styles.listItemContainer}
                 key={book.id}
-                primaryText={book.name}
+                primaryText={<span style={styles.bookTitle}>{book.name}</span>}
                 secondaryText={ formatDate((new Date(book.id)).toString())}
-                rightAvatar={
-                  <Avatar
-                    src="images/cover.jpg"
-                    style={styles.leftAvatarOfListItem}
+                leftAvatar={
+                  <img
+                    src={book.image}
+                    style={styles.bookCover}
                   />
                 }
                 rightIconButton={
