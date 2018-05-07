@@ -63,7 +63,7 @@ class ListBookScreen extends Component {
   }
 
   onEditBook(book){
-    browserHistory.push('/app/book/edit/'+book.id);
+    browserHistory.push('/app/book/chapter_list/'+book.id);
   }
 
   render() {
@@ -79,13 +79,13 @@ class ListBookScreen extends Component {
       },
       listItem: {
         height: 255,
-        paddingLeft: 50
+        paddingLeft: 200
       },
       leftAvatarOfListItem: {
         borderRadius: 0,
         height: 225,
         width: 150,
-        marginRight: 300,
+        marginLeft: -200,
       }
     };
 
@@ -111,8 +111,13 @@ class ListBookScreen extends Component {
                 style={styles.listItem}
                 key={book.id}
                 primaryText={book.name}
-                secondaryText={ formatDate((new Date(book.id)).toString())}
-                rightAvatar={
+                secondaryText={
+                  ["Ngày tạo:" + "\u00A0\u00A0\u00A0" + formatDate((new Date(book.date_created)).toString()),
+                  <br />,
+                  "Ngày cập nhật gần nhất: " + formatDate((new Date(book.date_modified)).toString())]
+                }
+                secondaryTextLines={2}
+                leftAvatar={
                   <Avatar
                     src="images/cover.jpg"
                     style={styles.leftAvatarOfListItem}
