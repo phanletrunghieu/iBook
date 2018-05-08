@@ -63,7 +63,7 @@ class ListBookScreen extends Component {
   }
 
   onEditBook(book){
-    browserHistory.push('/app/book/chapter_list/'+book.id);
+    browserHistory.push('/app/book/'+book.id);
   }
 
   render() {

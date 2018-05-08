@@ -34,15 +34,33 @@ export function getBooksData(){
 /**
  * Lấy sách theo id
  */
-export function getBookByID(bookId) {
+export function getBookByID(book_id) {
   return new Promise(function(resolve, reject) {
     getBooksData()
     .then(list_books=>{
-      var books = list_books.filter(book=>book.id.toString() === bookId.toString());
+      var books = list_books.filter(book=>book.id.toString() === book_id.toString());
       if(books.length <= 0){
         resolve(null);
       } else {
         resolve(books[0]);
+      }
+    })
+    .catch(err=>reject(err));
+  });
+}
+/**
+ * Lấy chuơng theo BookId, ChapterId
+ */
+export function getChapterByID(book_id, chapter_id) {
+  return new Promise(function(resolve, reject) {
+    getBooksData()
+    .then(list_books=>{
+      var books = list_books.filter(book=>book.id.toString() === book_id.toString());
+      var chapters = books[0].chapters.filter(chapter=>chapter.id.toString() === chapter_id.toString())
+      if(chapters.length <= 0){
+        resolve(null);
+      } else {
+        resolve(chapters[0]);
       }
     })
     .catch(err=>reject(err));
@@ -91,10 +109,10 @@ export function addBook(name) {
 /**
  * Xoá 1 sách
  */
-export function deleteBook(id) {
+export function deleteBook(book_id) {
   return getBooksData()
   .then(list_books=>{
-    var index=list_books.findIndex(book=>book.id.toString() === id.toString());
+    var index=list_books.findIndex(book=>book.id.toString() === book_id.toString());
     list_books[index].status_id = 3;
 
     return setBooksData(list_books);
@@ -147,7 +165,7 @@ export function editChapterName(book_id, chapter_id, chapter_name) {
 /**
  * Chỉnh sửa nội dung của 1 chapter trong sách
  */
-export function editContent(book_id, chapter_id, newContent) {
+export function editChapterContent(book_id, chapter_id, newContent) {
   return getBooksData()
   .then(list_books=>{
     var book_index = list_books.findIndex(book=>book.id.toString() === book_id.toString());
@@ -160,6 +178,21 @@ export function editContent(book_id, chapter_id, newContent) {
     list_books[book_index].date_modified = Date.now();
     if(list_books[book_index].status_id!==1)
       list_books[book_index].status_id = 2;
+
+    return setBooksData(list_books);
+  });
+}
+
+export function deleteChapter(book_id, chapter_id) {
+  return getBooksData()
+  .then(list_books=>{
+    var book_index = list_books.findIndex(book=>book.id.toString() === book_id.toString());
+    var book = list_books[book_index];
+
+    var chapter_index = book.chapters.findIndex(chapter=>chapter.id===chapter_id);
+
+    list_books[book_index].date_modified = Date.now();
+    list_books[book_index].chapters.splice(chapter_index - 1, 1);
 
     return setBooksData(list_books);
   });

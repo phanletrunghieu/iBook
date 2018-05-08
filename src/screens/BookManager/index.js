@@ -17,6 +17,7 @@ import ExitToAppIcon from 'material-ui/svg-icons/action/exit-to-app';
 
 import ListBookScreen from './ListBook';
 import BookEditorScreen from './BookEditor';
+import ChapterListScreen from './ChapterList';
 
 import config from '../../config';
 
@@ -172,7 +173,8 @@ class BookManagerScreen extends Component {
       <div style={{marginTop: 64}}>
         <Switch>
           <Route exact path="/app" render={(props)=><ListBookScreen {...props} />} />
-          <Route exact path="/app/book/edit/:bookId" render={(props)=><BookEditorScreen {...props} />} />
+          <Route exact path="/app/book/:bookId/:chapterId" render={(props)=><BookEditorScreen {...props} />} />
+          <Route exact path="/app/book/:bookId" render={(props)=><ChapterListScreen {...props} />} />
         </Switch>
       </div>
 
