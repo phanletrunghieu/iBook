@@ -42,7 +42,13 @@ class HomeScreen extends Component {
             </div>
           </div>
         </div>
+        <div className="container introduce">
+          <div className="col-md-6">thienhoa</div>
+          <div className="col-md-6">alo</div>
+        </div> 
       </div>
+      
+      
     );
   }
 }
