@@ -1,7 +1,25 @@
 import React, { Component } from 'react';
 import TextField from 'material-ui/TextField';
 
+import Avatar from 'material-ui/Avatar';
+import Chip from 'material-ui/Chip';
+import FontIcon from 'material-ui/FontIcon';
+import SvgIconFace from 'material-ui/svg-icons/action/face';
+import {blue300, indigo900} from 'material-ui/styles/colors';
+
+import FloatingActionButton from 'material-ui/FloatingActionButton';
+import RaisedButton from 'material-ui/RaisedButton';
+
+import SaveIcon from 'material-ui/svg-icons/content/save';
+
+
+
+import FlatButton from 'material-ui/FlatButton';
+
+
 import config from '../../../config';
+
+
 
 class BookDetailScreen extends Component {
 
@@ -29,6 +47,7 @@ class BookDetailScreen extends Component {
       }
     }
 
+
   }
 
   render() {
@@ -45,6 +64,8 @@ class BookDetailScreen extends Component {
       }
     }
 
+
+
     return (
       <div>
         <div style={{overflow:"hidden", padding: "0 50px", marginTop:150}}>
@@ -55,26 +76,36 @@ class BookDetailScreen extends Component {
 
           </div>
 
-          <div style={{float:"left", marginLeft:50, width: "calc(100% - 250px)"}}>
-            <TextField
-              inputStyle={{fontSize:40}}
-              hintText=""
-              floatingLabelText=""
-              fullWidth
-            />
+          <div>
+            <div style={{float:"left", marginLeft:50, width: "calc(100% - 250px)"}}>
+                <TextField
+
+                inputStyle={{fontSize:40, }}
+                hintText="Tên Sách"
+                defaultValue="Bàn có 5 chỗ ngồi"
+                fullWidth
+                multiLine={true}
+                underlineShow={false}
+                />
+            </div>
+
+
+
+            </div>
+
+            <div style={{float:"center", marginLeft:250, marginRight:150, marginTop:50}}>
+              <TextField
+                inputStyle={{fontSize:20}}
+                hintText="Mô tả nội dung sách"
+                underlineShow={false}
+                fullWidth
+                multiLine={true}
+              />
           </div>
 
         </div>
 
-        <div style={{float:"center", marginLeft:150, marginRight:150, marginTop:50}}>
-          <TextField
-            inputStyle={{fontSize:25}}
-            hintText=""
-            floatingLabelText=""
-            fullWidth
-            multiLine
-          />
-        </div>
+
 
       </div>
     );

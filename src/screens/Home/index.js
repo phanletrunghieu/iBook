@@ -43,6 +43,7 @@ class HomeScreen extends Component {
           </div>
         </div>
       </div>
+
     );
   }
 }
