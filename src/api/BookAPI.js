@@ -11,7 +11,7 @@ const KEY_BOOK = 'list_books';
  * @property name {string} - tên sách
  * @property date_created {timestamp} - ngày tạo sách
  * @property date_modified {timestamp} - ngày chỉnh sách
- * @property status_id {int} - 1: mới tạo, 2: bị thay đổi nội dung, 3: xoá, 4: đã đồng bộ trên drive
+ * @property status_id {int} - 1: mới tạo, 2: bị thay đổi nội dung, 3: xoá, 4: đã đồng bộ trên drive, 5: đổi tên, 6: đổi bìa sách
  * @property chapters {array} - chứa các chapter {id, name, content}
  */
 
@@ -194,6 +194,34 @@ export function deleteChapter(book_id, chapter_id) {
 
     list_books[book_index].date_modified = Date.now();
     list_books[book_index].chapters.splice(chapter_index - 1, 1);
+
+    return setBooksData(list_books);
+  });
+}
+
+/**
+ * Đổi tên sách
+ */
+export function editBookName(book_id, new_name) {
+  return getBooksData()
+  .then(list_books=>{
+    var index=list_books.findIndex(book=>book.id.toString() === book_id.toString());
+    list_books[index].name = new_name;
+    list_books[index].status_id = 5;
+
+    return setBooksData(list_books);
+  });
+}
+
+/**
+ * Đổi bìa sách
+ */
+export function editBookCover(book_id, new_image) {
+  return getBooksData()
+  .then(list_books=>{
+    var index=list_books.findIndex(book=>book.id.toString() === book_id.toString());
+    list_books[index].image = new_image;
+    list_books[index].status_id = 6;
 
     return setBooksData(list_books);
   });
