@@ -31,6 +31,7 @@ class ListBookScreen extends Component {
     this.onAddNewBook = this.onAddNewBook.bind(this);
     this.loadData = this.loadData.bind(this);
     this.onEditBook = this.onEditBook.bind(this);
+    this.onEditInfoBook = this.onEditInfoBook.bind(this);
   }
 
   componentDidMount() {
@@ -64,6 +65,10 @@ class ListBookScreen extends Component {
 
   onEditBook(book){
     browserHistory.push('/app/book/'+book.id);
+  }
+
+  onEditInfoBook(book){
+    browserHistory.push('/app/book/'+book.id+'/detail');
   }
 
   render() {
@@ -110,16 +115,17 @@ class ListBookScreen extends Component {
       <div>
         <List>
           {
-            this.state.list_books.map(book=>(
+            this.state.list_books.map((book, index)=>(
               <ListItem
+                key={book.id}
                 style={styles.listItem}
                 innerDivStyle={styles.listItemContainer}
-                key={book.id}
                 primaryText={<span style={styles.bookTitle}>{book.name}</span>}
                 secondaryText={
-                  ["Ngày tạo:" + "\u00A0\u00A0\u00A0" + formatDate((new Date(book.date_created)).toString()),
-                  <br />,
-                  "Ngày cập nhật gần nhất: " + formatDate((new Date(book.date_modified)).toString())]
+                  <div>
+                    <div>{"Ngày tạo:" + "\u00A0\u00A0\u00A0" + formatDate((new Date(book.date_created)).toString())}</div>
+                    <div>{"Ngày cập nhật gần nhất: " + formatDate((new Date(book.date_modified)).toString())}</div>
+                  </div>
                 }
                 secondaryTextLines={2}
                 leftAvatar={
@@ -134,6 +140,7 @@ class ListBookScreen extends Component {
                     anchorOrigin={{horizontal: 'right', vertical: 'top'}}
                     targetOrigin={{horizontal: 'right', vertical: 'top'}}
                   >
+                    <MenuItem primaryText="Edit info" onClick={()=>this.onEditInfoBook(book)} />
                     <MenuItem primaryText="Delete" />
                   </IconMenu>
                 }
