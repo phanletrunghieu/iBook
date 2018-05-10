@@ -121,7 +121,7 @@ class ChapterListScreen extends Component {
                     anchorOrigin={{horizontal: 'right', vertical: 'top'}}
                     targetOrigin={{horizontal: 'right', vertical: 'top'}}
                   >
-                    <MenuItem primaryText="Delete" />
+                    <MenuItem primaryText="Delete" onClick={()=>this.onDeleteChapter(chapter.id)} />
                   </IconMenu>
                 }
                 onClick={()=>this.onEditChapter(this.state.book.id, chapter)}
