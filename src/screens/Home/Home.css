@@ -1,12 +1,14 @@
   .home-page {
-  text-align: center; }
+  text-align: center; 
+  height:100vh;
+  }
   .home-page .home-background {
     background-image: url("/images/romance.jpg"); }
   .home-page .full-screen {
-    position: fixed;
+    position: absolute;
     top: 0;
     left: 0;
-    height: 100%;
+    height: 100vh;
     width: 100%;
     z-index: 0;
     background-repeat: no-repeat;

@@ -20,35 +20,43 @@ class HomeScreen extends Component {
 
   render() {
     return (
-      <div className="container home-page">
-        <div className="full-screen home-background"></div>
-        <header>
-          <div className="logo">
-            <img src="images/logo.png" alt="iBook – Ứng dụng viết sách" title="iBook – Ứng dụng viết sách" width="40"/>
-            <span>ibook</span>
-          </div>
-        </header>
-        <div className="auth">
-          <div className="row">
-            <div className="col-sm-8 offset-sm-2">
-              <div className="title">
-                Sách là người bạn lớn của con người<br/>
-                hãy để <span className="hightlight">iBook</span> là tri kỷ trong trái tim bạn
-              </div>
-              <h1 className="sub-title">
-                Ứng dụng đọc sách miễn phí Ebooks văn học, ngoại ngữ, kinh tế, ngôn tình...
-              </h1>
-              <RaisedButton primary label="Get Started" onClick={this.goApp} />
-            </div>
-          </div>
-        </div>
-        <div className="container introduce">
-          <div className="col-md-6">thienhoa</div>
-          <div className="col-md-6">alo</div>
-        </div> 
-      </div>
-      
-      
+    	<div>
+		    <div className="container home-page">
+		        <div className="full-screen home-background"></div>
+		        <header>
+		          <div className="logo">
+		            <img src="images/logo.png" alt="iBook – Ứng dụng viết sách" title="iBook – Ứng dụng viết sách" width="40"/>
+		            <span>ibook</span>
+		          </div>
+		        </header>
+		        <div className="auth">
+		          <div className="row">
+		            <div className="col-sm-8 offset-sm-2">
+		              <div className="title">
+		                Sách là người bạn lớn của con người<br/>
+		                hãy để <span className="hightlight">iBook</span> là tri kỷ trong trái tim bạn
+		              </div>
+		              <h1 className="sub-title">
+		                Ứng dụng đọc sách miễn phí Ebooks văn học, ngoại ngữ, kinh tế, ngôn tình...
+		              </h1>
+		              <RaisedButton primary label="Get Started" onClick={this.goApp} />
+		            </div>
+		          </div>
+		        </div>
+		    </div>
+	      	<div className="container">
+	      		<div className="row introduce">
+	      			<div className="col-md-6 col-xs-12">
+	      				<img src="/images/devices.png" alt="devices"/> 
+	      			</div>
+	          		<div className="col-md-6">
+	          			<h3>Đọc từ bất cứ nơi nào trên điện thoại của bạn</h3>
+	          			<p>Wattpad có tất cả những câu chuyện mà bạn cần, và chúng tôi làm cho nó dễ dàng để đọc — ngay trên điện thoại của bạn. Cho dù bạn online hay offline, bạn có thể đọc liên tục mà không cần lo lắng về việc tải xuống tập tin PDF.
+</p>
+	          		</div>
+	      		</div> 	
+	      	</div> 
+      	</div>
     );
   }
 }
