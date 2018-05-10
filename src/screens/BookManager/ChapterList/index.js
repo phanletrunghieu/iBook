@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import {List, ListItem} from 'material-ui/List';
-import Avatar from 'material-ui/Avatar';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
@@ -8,62 +7,64 @@ import TextField from 'material-ui/TextField';
 import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
 import IconButton from 'material-ui/IconButton';
+import Subheader from 'material-ui/Subheader';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 
 import AddIcon from 'material-ui/svg-icons/content/add';
 
 import browserHistory from "../../../utils/browserHistory";
 
-import {addBook, getBooksData} from "../../../api/BookAPI";
-import {formatDate} from "../../../utils/helper"
+import {getBookByID, addChapter, deleteChapter} from "../../../api/BookAPI";
 
-class ListBookScreen extends Component {
 
+class ChapterListScreen extends Component {
   state={
+    book: {chapters: []},
     openDialog: false,
-    newBookName: "",
-    list_books: [],
+    newChapterName: "",
   };
 
-  constructor(props){
+  constructor(props) {
     super(props);
 
-    this.onAddNewBook = this.onAddNewBook.bind(this);
     this.loadData = this.loadData.bind(this);
-    this.onEditBook = this.onEditBook.bind(this);
+    this.onAddNewChapter = this.onAddNewChapter.bind(this);
+    this.onEditChapter = this.onEditChapter.bind(this);
   }
 
   componentDidMount() {
     this.loadData();
-
-    var that=this;
-    setInterval(function () {
-      that.loadData();
-    }, 30*1000);
   }
 
-  loadData(){
-    console.log("loadData");
-    getBooksData()
-    .then(list_books=>{
-      this.setState({list_books});
+  loadData() {
+    getBookByID(this.props.match.params.bookId)
+    .then(book=> {
+      this.setState({book});
     });
   }
 
-  onAddNewBook(){
-    addBook(this.state.newBookName)
+  onAddNewChapter(){
+    addChapter(this.state.book.id, this.state.newChapterName)
     .then(()=>{
       this.setState({
         openDialog: false,
-        newBookName: "",
+        newChapterName: "",
       });
 
       this.loadData();
     });
   }
 
-  onEditBook(book){
-    browserHistory.push('/app/book/'+book.id);
+  onEditChapter(bookId, chapter){
+    browserHistory.push('/app/book/' + bookId + '/' + chapter.id);
+  }
+
+  onDeleteChapter(chapter_id) {
+    deleteChapter(this.state.book.id, chapter_id)
+    .then(() => {
+      this.loadData();
+      console.log("Xóa thành công");
+    });
   }
 
   render() {
@@ -78,18 +79,16 @@ class ListBookScreen extends Component {
         maxWidth: 'none',
       },
       listItem: {
-        height: 255,
+        paddingLeft: 50
       },
-      listItemContainer: {
-        paddingLeft: 170
-      },
-      bookTitle:{
-        fontWeight: 700,
-        fontSize: "larger",
-      },
-      bookCover: {
+      leftAvatarOfListItem: {
+        borderRadius: 0,
         height: 225,
         width: 150,
+        marginRight: 300,
+      },
+      subheader: {
+        fontSize: 30
       }
     };
 
@@ -102,32 +101,20 @@ class ListBookScreen extends Component {
       <FlatButton
         label="OK"
         primary={true}
-        onClick={this.onAddNewBook}
+        onClick={this.onAddNewChapter}
       />,
     ];
 
     return (
       <div>
         <List>
+          <Subheader style={styles.subheader}>{this.state.book.name}</Subheader>
           {
-            this.state.list_books.map(book=>(
+            this.state.book.chapters.map(chapter=>(
               <ListItem
                 style={styles.listItem}
-                innerDivStyle={styles.listItemContainer}
-                key={book.id}
-                primaryText={<span style={styles.bookTitle}>{book.name}</span>}
-                secondaryText={
-                  ["Ngày tạo:" + "\u00A0\u00A0\u00A0" + formatDate((new Date(book.date_created)).toString()),
-                  <br />,
-                  "Ngày cập nhật gần nhất: " + formatDate((new Date(book.date_modified)).toString())]
-                }
-                secondaryTextLines={2}
-                leftAvatar={
-                  <img
-                    src={book.image}
-                    style={styles.bookCover}
-                  />
-                }
+                key={chapter.id}
+                primaryText={chapter.name}
                 rightIconButton={
                   <IconMenu
                     iconButtonElement={<IconButton><MoreVertIcon /></IconButton>}
@@ -137,7 +124,7 @@ class ListBookScreen extends Component {
                     <MenuItem primaryText="Delete" />
                   </IconMenu>
                 }
-                onClick={()=>this.onEditBook(book)}
+                onClick={()=>this.onEditChapter(this.state.book.id, chapter)}
               />
             ))
           }
@@ -150,7 +137,7 @@ class ListBookScreen extends Component {
         </FloatingActionButton>
 
         <Dialog
-          title="Add new book"
+          title="Add new chapter"
           actions={actions}
           modal={false}
           contentStyle={styles.dialogContentStyle}
@@ -161,10 +148,10 @@ class ListBookScreen extends Component {
           <TextField
             fullWidth
             autoFocus
-            floatingLabelText="Book's name"
-            value={this.state.newBookName}
-            onChange={(e, newBookName)=>this.setState({newBookName})}
-            onKeyPress={e=>{if(e.key === 'Enter'){this.onAddNewBook()}}}
+            floatingLabelText="Chapter's name"
+            value={this.state.newChapterName}
+            onChange={(e, newChapterName)=>this.setState({newChapterName})}
+            onKeyPress={e=>{if(e.key === 'Enter'){this.onAddNewChapter()}}}
           />
         </Dialog>
       </div>
@@ -172,4 +159,4 @@ class ListBookScreen extends Component {
   }
 }
 
-export default ListBookScreen;
+export default ChapterListScreen;

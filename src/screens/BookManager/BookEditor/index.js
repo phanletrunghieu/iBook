@@ -6,13 +6,13 @@ import RaisedButton from 'material-ui/RaisedButton';
 
 import SaveIcon from 'material-ui/svg-icons/content/save';
 
-import {getBookByID, editContent} from "../../../api/BookAPI";
+import {getChapterByID, editChapterContent} from "../../../api/BookAPI";
 
 class BookEditorScreen extends Component {
 
   state={
     deviceWidth: 0,
-    book: {},
+    chapter: {},
   };
 
   constructor(props){
@@ -34,28 +34,31 @@ class BookEditorScreen extends Component {
   componentWillUnmount() {
     window.removeEventListener("resize", this.updateDimensions);
   }
-  updateDimensions(){
+  updateDimensions() {
     this.setState({deviceWidth: window.innerWidth});
   }
 
-  loadData(){
-    getBookByID(this.props.match.params.bookId)
-    .then(book=>{
-      this.setState({book});
-    });
+  loadData() {
+    var bookId = this.props.match.params.bookId;
+    var chapterId = this.props.match.params.chapterId;
+    getChapterByID(bookId, chapterId)
+    .then(chapter => {
+      this.setState({chapter});
+    })
   }
 
   handleChangeBookContent(value){
-    var book = this.state.book;
-    book.content = value;
-    this.setState({book});
+    var chapter = this.state.chapter;
+    chapter.content = value;
+    this.setState({chapter});
   }
 
   save(){
-    console.log(this.state.book);
-    editContent(this.state.book.id, this.state.book.content)
+    this.setState({chapter: this.state.chapter})
+    editChapterContent(this.props.match.params.bookId, this.props.match.params.chapterId, this.state.chapter.content)
     .then(()=>{
       console.log("Đã lưu");
+      this.props.history.goBack();
     })
   }
 
@@ -87,7 +90,7 @@ class BookEditorScreen extends Component {
       <div>
         <ReactQuill
           modules={reactQuillModules}
-          value={this.state.book.content}
+          value={this.state.chapter.content}
           onChange={value=>this.handleChangeBookContent(value)}
           style={{height: "calc(100vh - 110px)"}}
         />
