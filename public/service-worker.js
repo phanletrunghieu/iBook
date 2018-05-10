@@ -154,7 +154,9 @@ self.addEventListener('sync', function(event) {
             var p=updateRemoteFileContent(file.id, file.content);
             list_promise_push.push(p);
           } else if (file.status_id === 3) {
-            //xoá
+            //xoá file
+            var p=deleteRemoteFile(file.id);
+            list_promise_push.push(p);
           }
         });
 
@@ -188,6 +190,7 @@ self.addEventListener('message', function(event){
 /**
  * Cấu trúc 1 sách
  * @property id {string} - id sách (nếu đã được đồng bộ ? current_timestamp : google drive id)
+ * @property image {base64 string} - bìa sách
  * @property name {string} - tên sách
  * @property date_created {timestamp} - ngày tạo sách
  * @property date_modified {timestamp} - ngày chỉnh sách
@@ -264,13 +267,17 @@ function downloadFile(id, name, content="", status_id=1) {
  * Thay đổi status_id của file
  */
 function setBookSynced(id, driveId) {
-  return getLocalFile()
-  .then(list_books=>{
-    var index=list_books.findIndex(book=>book.id===id);
-    list_books[index].id=driveId;
-    list_books[index].status_id = 4;
+  return new Promise(function(resolve, reject) {
+    getLocalFile()
+    .then(list_books=>{
+      var index=list_books.findIndex(book=>book.id===id);
+      list_books[index].id=driveId;
+      list_books[index].status_id = 4;
 
-    return setLocalFile(list_books);
+      return setLocalFile(list_books);
+    })
+    .then(()=>resolve())
+    .catch(err=>reject(err));
   });
 }
 
@@ -407,4 +414,25 @@ function updateRemoteFileContent(fileId, content) {
     body: content,
   })
   .then(response => response.json());
+}
+
+function deleteRemoteFile(fileId) {
+  return new Promise(function(resolve, reject) {
+    console.log("Xoá file", fileId);
+    var url="https://www.googleapis.com/drive/v3/files/" + fileId;
+    fetch(url, {
+      cache: 'no-cache',
+      method: 'DELETE',
+      headers: {
+        'Authorization': self.token.token_type + " " + self.token.access_token,
+        'content-type': 'application/json',
+      },),
+    })
+    .then(response => response.json())
+    .then(response=>{
+      console.log(response);
+      return resolve(response);
+    })
+    .catch(err=>reject(err.message || err));
+  });
 }
