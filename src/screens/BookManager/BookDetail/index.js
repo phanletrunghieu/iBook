@@ -12,7 +12,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 
 import SaveIcon from 'material-ui/svg-icons/content/save';
 
-import {getBookByID} from "../../../api/BookAPI";
+import {getBookByID,editBookName,editBookCover} from "../../../api/BookAPI";
 
 
 
@@ -37,6 +37,7 @@ class BookDetailScreen extends Component {
     this.onChangeName=this.onChangeName.bind(this);
     this.onChangeImage=this.onChangeImage.bind(this);
     this.onChangeAuthor=this.onChangeAuthor.bind(this);
+    this.save=this.save.bind(this);
   }
 
   componentDidMount(){
@@ -90,6 +91,11 @@ class BookDetailScreen extends Component {
     )
   }
 
+  save()
+  {
+
+  }
+
   render() {
     var styles={
       coverInput: {
@@ -104,6 +110,13 @@ class BookDetailScreen extends Component {
       }
     }
 
+    var btSave={
+      floatingActionButton: {
+        position: 'fixed',
+        bottom: 15,
+        right: 15,
+      },
+    };
 
 
     return (
@@ -138,16 +151,34 @@ class BookDetailScreen extends Component {
             <div style={{float:"center", marginLeft:250, marginRight:150, marginTop:50}}>
               <TextField
                 inputStyle={{fontSize:20}}
-                hintText="Mô tả nội dung sách"
-                underlineShow={false}
-                fullWidth
+                floatingLabelFixed={true}
+                floatingLabelText="Mô tả nội dung "
                 multiLine={true}
+                fullWidth
               />
           </div>
 
         </div>
 
-
+        <div style={{float:"right"}}>
+          {
+            this.state.deviceWidth >= 992 ?
+            <RaisedButton
+            label="Save"
+            primary={true}
+            icon={<SaveIcon />}
+            btSave={styles.floatingActionButton}
+            onClick={this.save}
+            />
+            :
+            <FloatingActionButton
+              btSave={styles.floatingActionButton}
+              onClick={this.save}
+              >
+              <SaveIcon/>
+              </FloatingActionButton>
+            }
+        </div>
 
       </div>
     );
