@@ -79,7 +79,7 @@ class ChapterListScreen extends Component {
         maxWidth: 'none',
       },
       listItem: {
-        paddingLeft: 50
+        paddingLeft: 10
       },
       leftAvatarOfListItem: {
         borderRadius: 0,
@@ -88,6 +88,8 @@ class ChapterListScreen extends Component {
         marginRight: 300,
       },
       subheader: {
+        paddingTop: 15,
+        paddingLeft: 20,
         fontSize: 30
       }
     };
