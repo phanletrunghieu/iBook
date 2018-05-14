@@ -3,7 +3,7 @@ A tool for writing books on PCs, laptops, smartphones.
 
 Demo: https://ibook-199006.firebaseapp.com
 
-# How to build
+## How to build
 - install git, NodeJS 8+, npm
 - Clone project: `git clone https://github.com/phanletrunghieu/iBook.git`
 - Install modules: `npm i`
