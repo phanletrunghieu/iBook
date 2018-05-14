@@ -122,12 +122,11 @@ class ListBookScreen extends Component {
                 innerDivStyle={styles.listItemContainer}
                 primaryText={<span style={styles.bookTitle}>{book.name}</span>}
                 secondaryText={
-                  <div>
-                    <div>{"Ngày tạo:" + "\u00A0\u00A0\u00A0" + formatDate((new Date(book.date_created)).toString())}</div>
+                  <div style={{height: 100}}>
+                    <div>{"Ngày tạo:\u00A0\u00A0\u00A0" + formatDate((new Date(book.date_created)).toString())}</div>
                     <div>{"Ngày cập nhật gần nhất: " + formatDate((new Date(book.date_modified)).toString())}</div>
                   </div>
                 }
-                secondaryTextLines={2}
                 leftAvatar={
                   <img
                     src={book.image}
