@@ -1,5 +1,5 @@
   .home-page {
-  text-align: center; 
+  text-align: center;
   height:100vh;
   }
   .home-page .home-background {
@@ -28,7 +28,7 @@
     display: inline-block;
     vertical-align: middle; }
   .home-page .logo img {
-    border-radius: 10px; 
+    border-radius: 10px;
     margin-right: 5px; }
   .home-page .logo {
     float: left;
@@ -96,7 +96,7 @@
         height: auto;
     }
     .footer-content {
-        background-image: url("/images/covers.jpg"); 
+        background-image: url("/images/covers.jpg");
         height: 303px;
         width: 100%;
         text-align: center;
@@ -115,7 +115,11 @@
     .auth-footer {
         background: #000;
         color: #fff;
-        padding-top: 7px ;
+        padding-top: 7px;
+    }
+    .auth-footer > .row {
+      margin-left: 0;
+      margin-right: 0;
     }
     .title-footer {
         width: 92px;
