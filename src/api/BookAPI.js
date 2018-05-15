@@ -9,6 +9,8 @@ const KEY_BOOK = 'list_books';
  * @property id {string} - id sách (nếu đã được đồng bộ ? current_timestamp : google drive id)
  * @property image {base64 string} - bìa sách
  * @property name {string} - tên sách
+ * @property author {string} - tác giả sách
+ * @property description {string} - mô tả
  * @property date_created {timestamp} - ngày tạo sách
  * @property date_modified {timestamp} - ngày chỉnh sách
  * @property status_id {int} - 1: mới tạo, 2: bị thay đổi nội dung, 3: xoá, 4: đã đồng bộ trên drive, 5: đổi tên, 6: đổi bìa sách
@@ -93,6 +95,7 @@ export function addBook(name) {
       id: uuidv1(),
       image: "https://about.canva.com/wp-content/uploads/sites/3/2015/01/children_bookcover.png",
       name: name,
+      author: "",
       chapters: [{
         id: uuidv1(),
         name: "Chapter 1",
@@ -214,6 +217,20 @@ export function editBookById(book_id, book) {
 }
 
 /**
+ * Cập nhật sách
+ */
+export function updateBook(book_id, new_data) {
+  return getBooksData()
+  .then(list_books=>{
+    var index=list_books.findIndex(book=>book.id.toString() === book_id.toString());
+    list_books[index] = new_data;
+    list_books[index].status_id = 2;
+
+    return setBooksData(list_books);
+  });
+}
+
+/**
  * Đổi tên sách
  */
 export function editBookName(book_id, new_name) {
@@ -236,6 +253,34 @@ export function editBookCover(book_id, new_image) {
     var index=list_books.findIndex(book=>book.id.toString() === book_id.toString());
     list_books[index].image = new_image;
     list_books[index].status_id = 6;
+
+    return setBooksData(list_books);
+  });
+}
+
+/**
+ * Đổi tên tác giả
+ */
+export function editBookAuthor(book_id, new_author) {
+  return getBooksData()
+  .then(list_books=>{
+    var index=list_books.findIndex(book=>book.id.toString() === book_id.toString());
+    list_books[index].author = new_author;
+    list_books[index].status_id = 2;
+
+    return setBooksData(list_books);
+  });
+}
+
+/**
+ * Đổi tên tác giả
+ */
+export function editBookDescription(book_id, new_description) {
+  return getBooksData()
+  .then(list_books=>{
+    var index=list_books.findIndex(book=>book.id.toString() === book_id.toString());
+    list_books[index].description = new_description;
+    list_books[index].status_id = 2;
 
     return setBooksData(list_books);
   });
