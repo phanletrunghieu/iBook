@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {List, ListItem} from 'material-ui/List';
+import Snackbar from 'material-ui/Snackbar';
 import Avatar from 'material-ui/Avatar';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
@@ -14,7 +15,7 @@ import AddIcon from 'material-ui/svg-icons/content/add';
 
 import browserHistory from "../../../utils/browserHistory";
 
-import {addBook, getBooksData} from "../../../api/BookAPI";
+import {addBook, getBooksData, deleteBook} from "../../../api/BookAPI";
 import {formatDate} from "../../../utils/helper"
 
 class ListBookScreen extends Component {
@@ -23,6 +24,7 @@ class ListBookScreen extends Component {
     openDialog: false,
     newBookName: "",
     list_books: [],
+    snackbarMessage: "",
   };
 
   constructor(props){
@@ -32,6 +34,7 @@ class ListBookScreen extends Component {
     this.loadData = this.loadData.bind(this);
     this.onEditBook = this.onEditBook.bind(this);
     this.onEditInfoBook = this.onEditInfoBook.bind(this);
+    this.onDeleteBook = this.onDeleteBook.bind(this);
   }
 
   componentDidMount() {
@@ -57,9 +60,14 @@ class ListBookScreen extends Component {
       this.setState({
         openDialog: false,
         newBookName: "",
+        snackbarMessage: "Thêm thành công sách \"" + this.state.newBookName + "\"",
       });
 
       this.loadData();
+    })
+    .catch(err=>{
+      console.log("Lỗi thêm sách", err);
+      this.setState({snackbarMessage: "Thêm thất bại"});
     });
   }
 
@@ -69,6 +77,19 @@ class ListBookScreen extends Component {
 
   onEditInfoBook(book){
     browserHistory.push('/app/book/'+book.id+'/detail');
+  }
+
+  onDeleteBook(book){
+    deleteBook(book.id)
+    .then(()=>{
+      this.setState({snackbarMessage: "Đã xoá \"" + book.name + "\""});
+
+      this.loadData();
+    })
+    .catch(err=>{
+      console.log("Lỗi xoá sách", err);
+      this.setState({snackbarMessage: "Xoá thất bại"});
+    });
   }
 
   render() {
@@ -140,7 +161,7 @@ class ListBookScreen extends Component {
                     targetOrigin={{horizontal: 'right', vertical: 'top'}}
                   >
                     <MenuItem primaryText="Edit info" onClick={()=>this.onEditInfoBook(book)} />
-                    <MenuItem primaryText="Delete" />
+                    <MenuItem primaryText="Delete" onClick={()=>this.onDeleteBook(book)} />
                   </IconMenu>
                 }
                 onClick={()=>this.onEditBook(book)}
@@ -173,6 +194,14 @@ class ListBookScreen extends Component {
             onKeyPress={e=>{if(e.key === 'Enter'){this.onAddNewBook()}}}
           />
         </Dialog>
+
+        <Snackbar
+          open={this.state.snackbarMessage !== ""}
+          message={this.state.snackbarMessage}
+          autoHideDuration={4000}
+          onRequestClose={()=>this.setState({snackbarMessage: ""})}
+          bodyStyle={{textAlign: "center"}}
+        />
       </div>
     );
   }
