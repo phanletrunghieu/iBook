@@ -62,6 +62,14 @@ class BookDetailScreen extends Component {
     var that = this;
     if(e.target.files.length>0){
       var file=e.target.files[0];
+      if(file.size>2097152)
+      {
+        this.setState({
+          SnackbarMessage:"Hình không được quá 2MB"
+        })
+
+        return;
+      }
       var reader = new FileReader();
 
       reader.onloadend = function () {
