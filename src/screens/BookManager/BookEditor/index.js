@@ -3,16 +3,21 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css'
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import RaisedButton from 'material-ui/RaisedButton';
+import Snackbar from 'material-ui/Snackbar';
 
 import SaveIcon from 'material-ui/svg-icons/content/save';
 
 import {getChapterByID, editChapterContent} from "../../../api/BookAPI";
+import {getTimeAutoSave, setTimeAutoSave, getTimeAutoSync, setTimeAutoSync} from "../../../api/SettingAPI";
+
+import "./BookEditor.css"
 
 class BookEditorScreen extends Component {
 
   state={
     deviceWidth: 0,
     chapter: {},
+    snackbarMessage: "",
   };
 
   constructor(props){
@@ -22,6 +27,7 @@ class BookEditorScreen extends Component {
     this.loadData = this.loadData.bind(this);
     this.handleChangeBookContent = this.handleChangeBookContent.bind(this);
     this.save = this.save.bind(this);
+    this.onClickSave = this.onClickSave.bind(this);
   }
 
   componentWillMount() {
@@ -30,9 +36,19 @@ class BookEditorScreen extends Component {
   componentDidMount() {
     window.addEventListener("resize", this.updateDimensions);
     this.loadData();
+
+    //auto Save
+    var that = this
+    this.intervalAutoSave=setInterval(function () {
+      that.save()
+      .then(()=>{
+        that.setState({snackbarMessage: "Auto save"});
+      })
+    }, getTimeAutoSave()*60*1000);
   }
   componentWillUnmount() {
     window.removeEventListener("resize", this.updateDimensions);
+    setInterval(this.intervalAutoSave);
   }
   updateDimensions() {
     this.setState({deviceWidth: window.innerWidth});
@@ -54,16 +70,26 @@ class BookEditorScreen extends Component {
   }
 
   save(){
-    this.setState({chapter: this.state.chapter})
-    editChapterContent(this.props.match.params.bookId, this.props.match.params.chapterId, this.state.chapter.content)
+    return editChapterContent(this.props.match.params.bookId, this.props.match.params.chapterId, this.state.chapter.content);
+  }
+
+  onClickSave(){
+    this.save()
     .then(()=>{
-      console.log("Đã lưu");
+      this.setState({snackbarMessage: "Saved"});
       this.props.history.goBack();
-    })
+    });
   }
 
   render() {
+
+    var is_desktop = this.state.deviceWidth >= 992;
+
     var styles={
+      container: {
+        backgroundColor: "#ccc",
+        padding: is_desktop ? "10px 10%" : "0",
+      },
       floatingActionButton: {
         position: 'fixed',
         bottom: 15,
@@ -87,12 +113,12 @@ class BookEditorScreen extends Component {
     };
 
     return (
-      <div>
+      <div style={styles.container} className="book-editor-screen">
         <ReactQuill
           modules={reactQuillModules}
           value={this.state.chapter.content}
           onChange={value=>this.handleChangeBookContent(value)}
-          style={{height: "calc(100vh - 110px)"}}
+          style={{height: 1000, backgroundColor: "#fff"}}
         />
         {
           this.state.deviceWidth >= 992 ?
@@ -106,11 +132,19 @@ class BookEditorScreen extends Component {
           :
           <FloatingActionButton
             style={styles.floatingActionButton}
-            onClick={this.save}
+            onClick={this.onClickSave}
           >
             <SaveIcon/>
           </FloatingActionButton>
         }
+
+        <Snackbar
+          open={this.state.snackbarMessage !== ""}
+          message={this.state.snackbarMessage}
+          autoHideDuration={4000}
+          onRequestClose={()=>this.setState({snackbarMessage: ""})}
+          bodyStyle={{textAlign: "center"}}
+        />
       </div>
     );
   }

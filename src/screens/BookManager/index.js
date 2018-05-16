@@ -19,6 +19,7 @@ import ListBookScreen from './ListBook';
 import BookEditorScreen from './BookEditor';
 import ChapterListScreen from './ChapterList';
 import BookDetailScreen from './BookDetail';
+import SettingScreen from './Setting';
 
 import config from '../../config';
 
@@ -167,7 +168,15 @@ class BookManagerScreen extends Component {
             <MenuItem leftIcon={<ExitToAppIcon/>} onClick={GoogleDriveAPI.signOut}>Logout</MenuItem>
           )
         }
-        <MenuItem leftIcon={<SettingsIcon/>}>Settings</MenuItem>
+        <MenuItem
+          leftIcon={<SettingsIcon/>}
+          onClick={()=>{
+            browserHistory.push('/app/setting');
+            this.setState({openDrawer: false});
+          }}
+        >
+          Settings
+        </MenuItem>
         <MenuItem leftIcon={<InfoIcon/>}>About</MenuItem>
       </Drawer>
 
@@ -177,6 +186,7 @@ class BookManagerScreen extends Component {
           <Route exact path="/app/book/:bookId/detail" render={(props)=><BookDetailScreen {...props} />} />
           <Route exact path="/app/book/:bookId/:chapterId" render={(props)=><BookEditorScreen {...props} />} />
           <Route exact path="/app/book/:bookId" render={(props)=><ChapterListScreen {...props} />} />
+          <Route exact path="/app/setting" render={(props)=><SettingScreen {...props} />} />
         </Switch>
       </div>
 
