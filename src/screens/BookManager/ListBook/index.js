@@ -92,17 +92,8 @@ class ListBookScreen extends Component {
     });
   }
 
-  render() {
+  renderBookItem(book){
     var styles={
-      floatingActionButton: {
-        position: 'fixed',
-        bottom: 15,
-        right: 15,
-      },
-      dialogContentStyle: {
-        width: 350,
-        maxWidth: 'none',
-      },
       listItem: {
         height: 255,
       },
@@ -119,6 +110,64 @@ class ListBookScreen extends Component {
       }
     };
 
+    return(
+      <ListItem
+        key={book.id}
+        style={styles.listItem}
+        innerDivStyle={styles.listItemContainer}
+        primaryText={<span style={styles.bookTitle}>{book.name}</span>}
+        secondaryText={
+          <div style={{height: 100}}>
+            <div>{"Ngày tạo:\u00A0\u00A0\u00A0" + formatDate((new Date(book.date_created)).toString())}</div>
+            <div>{"Ngày cập nhật gần nhất: " + formatDate((new Date(book.date_modified)).toString())}</div>
+          </div>
+        }
+        leftAvatar={
+          <img
+            src={book.image}
+            style={styles.bookCover}
+          />
+        }
+        rightIconButton={
+          <IconMenu
+            iconButtonElement={<IconButton><MoreVertIcon /></IconButton>}
+            anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+            targetOrigin={{horizontal: 'right', vertical: 'top'}}
+          >
+            <MenuItem primaryText="Edit info" onClick={()=>this.onEditInfoBook(book)} />
+            <MenuItem primaryText="Delete" onClick={()=>this.onDeleteBook(book)} />
+          </IconMenu>
+        }
+        onClick={()=>this.onEditBook(book)}
+      />
+    );
+  }
+
+  render() {
+    var styles={
+      floatingActionButton: {
+        position: 'fixed',
+        bottom: 15,
+        right: 15,
+      },
+      dialogContentStyle: {
+        width: 350,
+        maxWidth: 'none',
+      },
+      row: {
+        marginLeft: 0,
+        marginRight: 0,
+      },
+      colLeft: {
+        paddingLeft: 0,
+        paddingRight: 0,
+      },
+      colRight: {
+        paddingRight: 0,
+        paddingLeft: 0,
+      }
+    };
+
     const actions = [
       <FlatButton
         label="Cancel"
@@ -132,43 +181,38 @@ class ListBookScreen extends Component {
       />,
     ];
 
+    var list_1 = [],
+    list_2 = [];
+    for (var i = 0; i < this.state.list_books.length; i++) {
+      if(i<this.state.list_books.length/2){
+        list_1.push(this.state.list_books[i]);
+      } else {
+        list_2.push(this.state.list_books[i]);
+      }
+    }
+
     return (
       <div>
-        <List>
-          {
-            this.state.list_books.map((book, index)=>(
-              <ListItem
-                key={book.id}
-                style={styles.listItem}
-                innerDivStyle={styles.listItemContainer}
-                primaryText={<span style={styles.bookTitle}>{book.name}</span>}
-                secondaryText={
-                  <div style={{height: 100}}>
-                    <div>{"Ngày tạo:\u00A0\u00A0\u00A0" + formatDate((new Date(book.date_created)).toString())}</div>
-                    <div>{"Ngày cập nhật gần nhất: " + formatDate((new Date(book.date_modified)).toString())}</div>
-                  </div>
-                }
-                leftAvatar={
-                  <img
-                    src={book.image}
-                    style={styles.bookCover}
-                  />
-                }
-                rightIconButton={
-                  <IconMenu
-                    iconButtonElement={<IconButton><MoreVertIcon /></IconButton>}
-                    anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-                    targetOrigin={{horizontal: 'right', vertical: 'top'}}
-                  >
-                    <MenuItem primaryText="Edit info" onClick={()=>this.onEditInfoBook(book)} />
-                    <MenuItem primaryText="Delete" onClick={()=>this.onDeleteBook(book)} />
-                  </IconMenu>
-                }
-                onClick={()=>this.onEditBook(book)}
-              />
-            ))
-          }
-        </List>
+        <div className="row" style={styles.row}>
+          <div className="col-md-6" style={styles.colLeft}>
+            <List>
+              {
+                list_1.map(book=>(
+                  this.renderBookItem(book)
+                ))
+              }
+            </List>
+          </div>
+          <div className="col-md-6" style={styles.colRight}>
+            <List>
+              {
+                list_2.map(book=>(
+                  this.renderBookItem(book)
+                ))
+              }
+            </List>
+          </div>
+        </div>
         <FloatingActionButton
           style={styles.floatingActionButton}
           onClick={()=>this.setState({openDialog: true})}
