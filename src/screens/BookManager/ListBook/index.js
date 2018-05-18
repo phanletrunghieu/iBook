@@ -47,7 +47,6 @@ class ListBookScreen extends Component {
   }
 
   loadData(){
-    console.log("loadData");
     getBooksData()
     .then(list_books=>{
       this.setState({list_books});

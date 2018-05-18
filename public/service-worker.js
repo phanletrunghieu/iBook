@@ -5,8 +5,8 @@ var cacheName = 'weatherPWA-final-2';
 var filesToCache = [
   '/',
   '/index.html',
-  '/static/css/main.82807508.css',
-  '/static/js/main.8806800a.js',
+  '/static/css/main.ea6abbd8.css',
+  '/static/js/main.4628c31a.js',
   '/lib/bootstrap-4.0.0-dist/css/bootstrap.min.css',
   '/lib/bootstrap-4.0.0-dist/js/bootstrap.min.js',
   '/lib/fontawesome-free-5.0.8/css/fontawesome-all.min.css',
@@ -142,16 +142,20 @@ self.addEventListener('sync', function(event) {
               return newRemoteFile(file.name + ".ibook", "application/vnd.google-apps.document", folder.id);
             })
             .then(createdFile=>{
-              setBookSynced(file.id, createdFile.id);
+              console.log("đã tạo file trên drive", createdFile);
+              list_promise_push.push(setBookSynced(file.id, createdFile.id));
 
               // update nội dung
-              return updateRemoteFileContent(createdFile.id, file.content);
+              delete file.status_id;
+              file.id = createdFile.id;
+              return updateRemoteFileContent(createdFile.id, JSON.stringify(file));
             });
 
             list_promise_push.push(p);
           } else if (file.status_id === 2) {
             // file đã bị thay đổi => cần đồng bộ
-            var p=updateRemoteFileContent(file.id, file.content);
+            delete file.status_id;
+            var p=updateRemoteFileContent(file.id, JSON.stringify(file));
             list_promise_push.push(p);
           } else if (file.status_id === 3) {
             //xoá file
@@ -164,9 +168,9 @@ self.addEventListener('sync', function(event) {
       })
       .then(async ()=>{
         //lấy file từ google drive về
-        for (var i = 0; i < remoteFiles.length; i++) {
+        for (let i = 0; i < remoteFiles.length; i++) {
           console.log(i);
-          await downloadFile(remoteFiles[i].id, remoteFiles[i].name, "", 4);
+          await downloadFile(remoteFiles[i].id);
         }
       })
       .catch(error=>reject(error));
@@ -221,7 +225,7 @@ function setLocalFile(list_books) {
 /**
  * Thêm 1 sách vào local storage
  */
-function downloadFile(id, name, content="", status_id=1) {
+function downloadFile(id) {
   return new Promise(function(resolve, reject) {
     var list_books, fileIndex;
 
@@ -229,33 +233,21 @@ function downloadFile(id, name, content="", status_id=1) {
     .then(l=>{
       list_books = l;
 
-      var index=list_books.findIndex(book=>book.id===id);
-      if(index !== -1){
-        fileIndex = index;
-        return Promise.resolve();
-      }
-      var indexExt = name.indexOf('.ibook');
-      if(indexExt !== -1){
-        name = name.substring(0, indexExt);
-      }
-
-      list_books.push({
-        id: id,
-        name: name,
-        content: content,
-        status_id: status_id,
-      });
-
-      fileIndex = list_books.length-1;
-
-      return Promise.resolve();
-    })
-    .then(()=>{
-      return getRemoteFileContent(list_books[fileIndex].id);
+      return getRemoteFileContent(id);
     })
     .then(content=>{
+      content = JSON.parse(content);
+      content.status_id = 4;
+
       console.log(content);
-      list_books[fileIndex].content = content;
+
+      var index=list_books.findIndex(book=>book.id===id);
+      if(index === -1){
+        list_books.push(content);
+      } else {
+        list_books[index] = content;
+      }
+
       return setLocalFile(list_books);
     })
     .then(()=>resolve())
@@ -270,7 +262,7 @@ function setBookSynced(id, driveId) {
   return new Promise(function(resolve, reject) {
     getLocalFile()
     .then(list_books=>{
-      var index=list_books.findIndex(book=>book.id===id);
+      var index=list_books.findIndex(book=>book.id.toString()===id.toString());
       list_books[index].id=driveId;
       list_books[index].status_id = 4;
 
@@ -416,6 +408,9 @@ function updateRemoteFileContent(fileId, content) {
   .then(response => response.json());
 }
 
+/**
+ * Xoá file
+ */
 function deleteRemoteFile(fileId) {
   return new Promise(function(resolve, reject) {
     console.log("Xoá file", fileId);
@@ -426,7 +421,7 @@ function deleteRemoteFile(fileId) {
       headers: {
         'Authorization': self.token.token_type + " " + self.token.access_token,
         'content-type': 'application/json',
-      },),
+      },
     })
     .then(response => response.json())
     .then(response=>{

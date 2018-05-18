@@ -6,6 +6,7 @@ import Snackbar from 'material-ui/Snackbar';
 import browserHistory from "../../../utils/browserHistory";
 
 import {getTimeAutoSave, setTimeAutoSave, getTimeAutoSync, setTimeAutoSync} from "../../../api/SettingAPI";
+import {sync} from "../../../utils/helper";
 
 class SettingScreen extends Component {
 
@@ -40,6 +41,11 @@ class SettingScreen extends Component {
     setTimeAutoSave(this.state.time_auto_save);
     setTimeAutoSync(this.state.time_auto_sync);
     this.setState({snackbarMessage: "Lưu thành công"});
+
+    clearInterval(global.timerSync);
+    global.timerSync=setInterval(function () {
+      sync();
+    }, getTimeAutoSync()*60*1000);
   }
 
   render() {

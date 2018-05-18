@@ -25,6 +25,7 @@ import config from '../../config';
 
 import GoogleDriveAPI from '../../api/GoogleDriveAPI';
 import {setUserInfo, clearUserInfo, getUID, getName, getEmail, getAvatar} from '../../api/UserAPI';
+import {getTimeAutoSync} from "../../api/SettingAPI";
 
 import browserHistory from "../../utils/browserHistory";
 import {sync} from "../../utils/helper";
@@ -55,9 +56,9 @@ class BookManagerScreen extends Component {
     });
 
     sync();
-    setInterval(function () {
+    global.timerSync=setInterval(function () {
       sync();
-    }, 5*60*1000);
+    }, getTimeAutoSync()*60*1000);
   }
 
   toggleDrawer(){
@@ -72,10 +73,12 @@ class BookManagerScreen extends Component {
       if('serviceWorker' in navigator){
         var token=window.gapi.auth.getToken();
         navigator.serviceWorker.ready.then(()=>{
-          navigator.serviceWorker.controller.postMessage({
-            type: 'token',
-            data: token,
-          });
+          if (navigator.serviceWorker.controller) {
+            navigator.serviceWorker.controller.postMessage({
+              type: 'token',
+              data: token,
+            });
+          }
         });
       }
 
@@ -94,6 +97,8 @@ class BookManagerScreen extends Component {
         user_email: getEmail(),
         user_avatar: getAvatar(),
       });
+
+      sync();
 
       //browserHistory.push('/my-file');
     } else {
