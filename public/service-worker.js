@@ -6,7 +6,7 @@ var filesToCache = [
   '/',
   '/index.html',
   '/static/css/main.ea6abbd8.css',
-  '/static/js/main.4628c31a.js',
+  '/static/js/main.8cfbd820.js',
   '/lib/bootstrap-4.0.0-dist/css/bootstrap.min.css',
   '/lib/bootstrap-4.0.0-dist/js/bootstrap.min.js',
   '/lib/fontawesome-free-5.0.8/css/fontawesome-all.min.css',

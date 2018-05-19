@@ -33,6 +33,7 @@ class ListBookScreen extends Component {
     this.onAddNewBook = this.onAddNewBook.bind(this);
     this.loadData = this.loadData.bind(this);
     this.onEditBook = this.onEditBook.bind(this);
+    this.onViewBook = this.onViewBook.bind(this);
     this.onEditInfoBook = this.onEditInfoBook.bind(this);
     this.onDeleteBook = this.onDeleteBook.bind(this);
   }
@@ -72,6 +73,10 @@ class ListBookScreen extends Component {
 
   onEditBook(book){
     browserHistory.push('/app/book/'+book.id);
+  }
+
+  onViewBook(book){
+    browserHistory.push('/app/book/'+book.id+'/view');
   }
 
   onEditInfoBook(book){
@@ -133,6 +138,7 @@ class ListBookScreen extends Component {
             anchorOrigin={{horizontal: 'right', vertical: 'top'}}
             targetOrigin={{horizontal: 'right', vertical: 'top'}}
           >
+            <MenuItem primaryText="View" onClick={()=>this.onViewBook(book)} />
             <MenuItem primaryText="Edit info" onClick={()=>this.onEditInfoBook(book)} />
             <MenuItem primaryText="Delete" onClick={()=>this.onDeleteBook(book)} />
           </IconMenu>
