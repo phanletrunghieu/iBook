@@ -48,7 +48,9 @@ class BookEditorScreen extends Component {
   }
   componentWillUnmount() {
     window.removeEventListener("resize", this.updateDimensions);
-    setInterval(this.intervalAutoSave);
+
+    //clearInterval autosave
+    clearInterval(this.intervalAutoSave);
   }
   updateDimensions() {
     this.setState({deviceWidth: window.innerWidth});
@@ -70,6 +72,7 @@ class BookEditorScreen extends Component {
   }
 
   save(){
+    console.log("save");
     return editChapterContent(this.props.match.params.bookId, this.props.match.params.chapterId, this.state.chapter.content);
   }
 
@@ -127,7 +130,7 @@ class BookEditorScreen extends Component {
             primary={true}
             icon={<SaveIcon />}
             style={styles.floatingActionButton}
-            onClick={this.save}
+            onClick={this.onClickSave}
           />
           :
           <FloatingActionButton

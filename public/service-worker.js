@@ -6,7 +6,7 @@ var filesToCache = [
   '/',
   '/index.html',
   '/static/css/main.ea6abbd8.css',
-  '/static/js/main.8cfbd820.js',
+  '/static/js/main.943988d1.js',
   '/lib/bootstrap-4.0.0-dist/css/bootstrap.min.css',
   '/lib/bootstrap-4.0.0-dist/js/bootstrap.min.js',
   '/lib/fontawesome-free-5.0.8/css/fontawesome-all.min.css',
@@ -115,6 +115,7 @@ self.addEventListener('sync', function(event) {
       }
 
       console.log("Start sync...");
+      self.registration.showNotification("Start sync...");
 
       var list_promise=[];
       //local file
@@ -143,10 +144,9 @@ self.addEventListener('sync', function(event) {
             })
             .then(createdFile=>{
               console.log("đã tạo file trên drive", createdFile);
-              list_promise_push.push(setBookSynced(file.id, createdFile.id));
+              list_promise_push.push(setBookId(file.id, createdFile.id));
 
               // update nội dung
-              delete file.status_id;
               file.id = createdFile.id;
               return updateRemoteFileContent(createdFile.id, JSON.stringify(file));
             });
@@ -154,7 +154,6 @@ self.addEventListener('sync', function(event) {
             list_promise_push.push(p);
           } else if (file.status_id === 2) {
             // file đã bị thay đổi => cần đồng bộ
-            delete file.status_id;
             var p=updateRemoteFileContent(file.id, JSON.stringify(file));
             list_promise_push.push(p);
           } else if (file.status_id === 3) {
@@ -162,6 +161,8 @@ self.addEventListener('sync', function(event) {
             var p=deleteRemoteFile(file.id);
             list_promise_push.push(p);
           }
+
+          list_promise_push.push(setBookStatusId(file.id, 4));
         });
 
         return Promise.all(list_promise_push);
@@ -239,7 +240,7 @@ function downloadFile(id) {
       content = JSON.parse(content);
       content.status_id = 4;
 
-      console.log(content);
+      console.log("download file", content);
 
       var index=list_books.findIndex(book=>book.id===id);
       if(index === -1){
@@ -256,15 +257,36 @@ function downloadFile(id) {
 }
 
 /**
- * Thay đổi status_id của file
+ * Thay đổi id của file
  */
-function setBookSynced(id, driveId) {
+function setBookId(id, driveId) {
   return new Promise(function(resolve, reject) {
     getLocalFile()
     .then(list_books=>{
       var index=list_books.findIndex(book=>book.id.toString()===id.toString());
       list_books[index].id=driveId;
       list_books[index].status_id = 4;
+
+      return setLocalFile(list_books);
+    })
+    .then(()=>resolve())
+    .catch(err=>reject(err));
+  });
+}
+
+/**
+ * Thay đổi id của file
+ */
+function setBookStatusId(id, status_id) {
+  return new Promise(function(resolve, reject) {
+    console.log("Change book status_id", id, status_id);
+    getLocalFile()
+    .then(list_books=>{
+      var index=list_books.findIndex(book=>book.id.toString()===id.toString());
+      if(index===-1)
+        return;
+
+      list_books[index].status_id = status_id;
 
       return setLocalFile(list_books);
     })

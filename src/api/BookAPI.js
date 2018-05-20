@@ -198,19 +198,8 @@ export function deleteChapter(book_id, chapter_id) {
     list_books[book_index].date_modified = Date.now();
     list_books[book_index].chapters.splice(chapter_index, 1);
 
-    return setBooksData(list_books);
-  });
-}
-
-/**
- * Update sách
- */
-export function editBookById(book_id, book) {
-  return getBooksData()
-  .then(list_books=>{
-    var index=list_books.findIndex(book=>book.id.toString() === book_id.toString());
-    list_books[index] = book;
-    list_books[index].status_id = 2;
+    if(list_books[book_index].status_id!==1)
+      list_books[book_index].status_id = 2;
 
     return setBooksData(list_books);
   });
@@ -224,7 +213,9 @@ export function updateBook(book_id, new_data) {
   .then(list_books=>{
     var index=list_books.findIndex(book=>book.id.toString() === book_id.toString());
     list_books[index] = new_data;
-    list_books[index].status_id = 2;
+
+    if(list_books[index].status_id!==1)
+      list_books[index].status_id = 2;
 
     return setBooksData(list_books);
   });
