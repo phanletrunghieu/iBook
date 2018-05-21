@@ -102,11 +102,14 @@ class ListBookScreen extends Component {
         height: 255,
       },
       listItemContainer: {
-        paddingLeft: 170
+        paddingLeft: 170,
       },
       bookTitle:{
         fontWeight: 700,
         fontSize: "larger",
+        paddingLeft: 10,
+        paddingBottom: 3,
+        'display': 'block',
       },
       bookCover: {
         height: 225,
@@ -121,9 +124,11 @@ class ListBookScreen extends Component {
         innerDivStyle={styles.listItemContainer}
         primaryText={<span style={styles.bookTitle}>{book.name}</span>}
         secondaryText={
-          <div style={{height: 100}}>
-            <div>{"Ngày tạo:\u00A0\u00A0\u00A0" + formatDate((new Date(book.date_created)).toString())}</div>
-            <div>{"Ngày cập nhật gần nhất: " + formatDate((new Date(book.date_modified)).toString())}</div>
+          <div style={{height: 255, paddingLeft: 10, 'white-space': 'unset'}}>
+            <div>{"Date created: " + formatDate((new Date(book.date_created)).toString())}</div>
+            <div>{"Last updated: " + formatDate((new Date(book.date_modified)).toString())}</div>
+            <div>{"Author: " + book.author}</div>
+            <div>{"Description: " + book.description}</div>
           </div>
         }
         leftAvatar={

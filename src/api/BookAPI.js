@@ -96,6 +96,7 @@ export function addBook(name) {
       image: "https://about.canva.com/wp-content/uploads/sites/3/2015/01/children_bookcover.png",
       name: name,
       author: "",
+      description: "",
       chapters: [{
         id: uuidv1(),
         name: "Chapter 1",

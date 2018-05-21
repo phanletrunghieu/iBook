@@ -88,9 +88,13 @@ class ChapterListScreen extends Component {
         marginRight: 300,
       },
       subheader: {
+        fontFamily: 'Roboto',
+        fontWeight: 700,
+        fontSize: "larger",
+        color: "black",
+        'display': 'block',
         paddingTop: 15,
         paddingLeft: 20,
-        fontSize: 30
       }
     };
 
@@ -110,7 +114,7 @@ class ChapterListScreen extends Component {
     return (
       <div>
         <List>
-          <Subheader style={styles.subheader}>{this.state.book.name}</Subheader>
+          <Subheader style={styles.subheader}>{this.state.book.name + " - Chapter list"}</Subheader>
           {
             this.state.book.chapters.map(chapter=>(
               <ListItem

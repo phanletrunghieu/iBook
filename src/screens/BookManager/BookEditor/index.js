@@ -4,6 +4,7 @@ import 'react-quill/dist/quill.snow.css'
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import Snackbar from 'material-ui/Snackbar';
+import TextField from 'material-ui/TextField';
 
 import SaveIcon from 'material-ui/svg-icons/content/save';
 
@@ -98,6 +99,11 @@ class BookEditorScreen extends Component {
         bottom: 15,
         right: 15,
       },
+      titleField: {
+        backgroundColor: 'white',
+        marginBottom: 10,
+        'text-align': 'center'
+      }
     };
 
     var reactQuillModules = {
@@ -117,6 +123,12 @@ class BookEditorScreen extends Component {
 
     return (
       <div style={styles.container} className="book-editor-screen">
+        <TextField style={styles.titleField}
+        id="text-field-default"
+        value={this.state.chapter.name}
+        floatingLabelText="Chapter's name"
+        floatingLabelFixed={true}
+        />
         <ReactQuill
           modules={reactQuillModules}
           value={this.state.chapter.content}

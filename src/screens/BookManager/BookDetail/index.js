@@ -199,7 +199,7 @@ class BookDetailScreen extends Component {
             <TextField
               inputStyle={{fontSize:20}}
               floatingLabelFixed={true}
-              floatingLabelText="Tác gỉả"
+              floatingLabelText="Author"
               value={this.state.BookData.author}
               onChange={(e,newAuthor)=>this.onChangeAuthor(newAuthor)}
             />
@@ -207,7 +207,7 @@ class BookDetailScreen extends Component {
             <TextField
               inputStyle={{fontSize:20}}
               floatingLabelFixed={true}
-              floatingLabelText="Mô tả nội dung "
+              floatingLabelText="Description"
               multiLine={true}
               fullWidth
               value={this.state.BookData.description}
