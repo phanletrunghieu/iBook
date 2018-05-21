@@ -9,6 +9,8 @@ const KEY_BOOK = 'list_books';
  * @property id {string} - id sách (nếu đã được đồng bộ ? current_timestamp : google drive id)
  * @property image {base64 string} - bìa sách
  * @property name {string} - tên sách
+ * @property author {string} - tác giả sách
+ * @property description {string} - mô tả
  * @property date_created {timestamp} - ngày tạo sách
  * @property date_modified {timestamp} - ngày chỉnh sách
  * @property status_id {int} - 1: mới tạo, 2: bị thay đổi nội dung, 3: xoá, 4: đã đồng bộ trên drive, 5: đổi tên, 6: đổi bìa sách
@@ -93,6 +95,7 @@ export function addBook(name) {
       id: uuidv1(),
       image: "https://about.canva.com/wp-content/uploads/sites/3/2015/01/children_bookcover.png",
       name: name,
+      author: "",
       chapters: [{
         id: uuidv1(),
         name: "Chapter 1",
@@ -195,47 +198,24 @@ export function deleteChapter(book_id, chapter_id) {
     list_books[book_index].date_modified = Date.now();
     list_books[book_index].chapters.splice(chapter_index, 1);
 
-    return setBooksData(list_books);
-  });
-}
-
-/**
- * Update sách
- */
-export function editBookById(book_id, book) {
-  return getBooksData()
-  .then(list_books=>{
-    var index=list_books.findIndex(book=>book.id.toString() === book_id.toString());
-    list_books[index] = book;
-    list_books[index].status_id = 2;
+    if(list_books[book_index].status_id!==1)
+      list_books[book_index].status_id = 2;
 
     return setBooksData(list_books);
   });
 }
 
 /**
- * Đổi tên sách
+ * Cập nhật sách
  */
-export function editBookName(book_id, new_name) {
+export function updateBook(book_id, new_data) {
   return getBooksData()
   .then(list_books=>{
     var index=list_books.findIndex(book=>book.id.toString() === book_id.toString());
-    list_books[index].name = new_name;
-    list_books[index].status_id = 5;
+    list_books[index] = new_data;
 
-    return setBooksData(list_books);
-  });
-}
-
-/**
- * Đổi bìa sách
- */
-export function editBookCover(book_id, new_image) {
-  return getBooksData()
-  .then(list_books=>{
-    var index=list_books.findIndex(book=>book.id.toString() === book_id.toString());
-    list_books[index].image = new_image;
-    list_books[index].status_id = 6;
+    if(list_books[index].status_id!==1)
+      list_books[index].status_id = 2;
 
     return setBooksData(list_books);
   });
