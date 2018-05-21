@@ -1,0 +1,160 @@
+  .home-page {
+  text-align: center;
+  height:100vh;
+  }
+  .home-page .home-background {
+    background-image: url("/images/romance.jpg"); }
+  .home-page .full-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100%;
+    z-index: 0;
+    background-repeat: no-repeat;
+    background-position: top right;
+    background-color: #333;
+    background-size: cover; }
+  .home-page header {
+    margin-top: 10px;
+    position: relative; }
+  .home-page .logo span {
+    font-size: 18px;
+    font-weight: bold;
+    letter-spacing: -0.1px;
+    text-align: center;
+    color: white;
+    text-transform: uppercase;
+    display: inline-block;
+    vertical-align: middle; }
+  .home-page .logo img {
+    border-radius: 10px;
+    margin-right: 5px; }
+  .home-page .logo {
+    float: left;
+    object-fit: contain; }
+  .home-page .row {
+    clear: both; }
+  .home-page .title {
+    object-fit: contain;
+    font-size: 28px;
+    text-align: center;
+    color: #333;
+    line-height: 35px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    margin-top: 70px;
+    position: relative;
+    color: #fff;
+    margin-bottom: 30px; }
+  .home-page .title:before {
+    content: "";
+    background: url("/images/quotes-left.png") no-repeat top left;
+    display: block;
+    width: 30px;
+    height: 30px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-size: 100%; }
+  .home-page .title:after {
+    content: "";
+    background: url("/images/quotes-right.png") no-repeat top left;
+    display: block;
+    width: 30px;
+    height: 30px;
+    position: absolute;
+    top: 0;
+    right: 5px;
+    background-size: 100%; }
+  .home-page .sub-title {
+    font-size: 15px;
+    text-align: center;
+    color: #fff;
+    margin-bottom: 35px;
+    font-weight: normal; }
+/* introduce css*/
+  .introduce {
+    padding-top: 50px;
+  }
+    .section1_title h3, .section2_title h3{
+        font-size: 32px;
+        font-weight: 600;
+        letter-spacing: -1px;
+        margin-top: 25px;
+        margin-bottom: 20px;
+        line-height: 1;
+        padding-top: 40px;
+    }
+    .section1_title p, .section2_title p {
+        font-size: 17px;
+        line-height: 1;
+    }
+    .section2_img img{
+        width: 100%;
+        max-width: 100%;
+        height: auto;
+    }
+    .footer-content {
+        background-image: url("/images/covers.jpg");
+        height: 303px;
+        width: 100%;
+        text-align: center;
+    }
+    .footer-content h2 {
+        color: #fff;
+        margin-top: 44px;
+        letter-spacing: -1px;
+        padding-top: 81px;
+        padding-bottom: 1px;
+    }
+    .footer-content p {
+        color: #fff;
+        font-size: 18px;
+    }
+    .auth-footer {
+        background: #000;
+        color: #fff;
+        padding-top: 7px;
+    }
+    .auth-footer > .row {
+      margin-left: 0;
+      margin-right: 0;
+    }
+    .title-footer {
+        width: 92px;
+        font-size: 18px;
+        font-weight: bold;
+        letter-spacing: -0.1px;
+        color: #fc9300;
+        text-transform: uppercase;
+    }
+    .text-left {
+        text-align: center!important;
+    }
+    .text-right {
+        margin-bottom: 0;
+        display: inline-block;
+        font-weight: 300;
+        font-size: 15px;
+        text-align: center!important;
+    }
+
+@media only screen and (max-width: 1000px) {
+    .introduce {
+        padding-top: 20px;
+    }
+    .section1_img img,  .section2_img img{
+        max-width: 100%;
+    }
+    .home-page .title:before {
+        display: none;
+    }
+    .home-page .title:after {
+        display: none;
+    }
+    .section1_title h3, .section2_title h3{
+        margin-top: 5px;
+        margin-bottom: 5px;
+    }
+}
