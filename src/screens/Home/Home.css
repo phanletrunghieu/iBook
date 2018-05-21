@@ -105,7 +105,8 @@
         color: #fff;
         margin-top: 44px;
         letter-spacing: -1px;
-        padding-top: 80px;
+        padding-top: 81px;
+        padding-bottom: 1px;
     }
     .footer-content p {
         color: #fff;
