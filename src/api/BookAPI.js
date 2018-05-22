@@ -170,7 +170,7 @@ export function editChapterName(book_id, chapter_id, chapter_name) {
 /**
  * Chỉnh sửa nội dung của 1 chapter trong sách
  */
-export function editChapterContent(book_id, chapter_id, newContent) {
+export function editChapterContent(book_id, chapter_id, newChapterName, newContent) {
   return getBooksData()
   .then(list_books=>{
     var book_index = list_books.findIndex(book=>book.id.toString() === book_id.toString());
@@ -179,6 +179,7 @@ export function editChapterContent(book_id, chapter_id, newContent) {
     var chapter_index = book.chapters.findIndex(chapter=>chapter.id===chapter_id);
 
     list_books[book_index].chapters[chapter_index].content = newContent;
+    list_books[book_index].chapters[chapter_index].name = newChapterName;
 
     list_books[book_index].date_modified = Date.now();
     if(list_books[book_index].status_id!==1)

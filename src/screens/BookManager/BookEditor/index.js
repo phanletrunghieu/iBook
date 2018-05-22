@@ -27,6 +27,7 @@ class BookEditorScreen extends Component {
     this.updateDimensions = this.updateDimensions.bind(this);
     this.loadData = this.loadData.bind(this);
     this.handleChangeBookContent = this.handleChangeBookContent.bind(this);
+    this.handleChangeChapterName = this.handleChangeChapterName.bind(this);
     this.save = this.save.bind(this);
     this.onClickSave = this.onClickSave.bind(this);
   }
@@ -72,9 +73,15 @@ class BookEditorScreen extends Component {
     this.setState({chapter});
   }
 
+  handleChangeChapterName(event) {
+    var chapter = this.state.chapter;
+    chapter.name = event.target.value;
+    this.setState({chapter});
+  }
+
   save(){
     console.log("save");
-    return editChapterContent(this.props.match.params.bookId, this.props.match.params.chapterId, this.state.chapter.content);
+    return editChapterContent(this.props.match.params.bookId, this.props.match.params.chapterId, this.state.chapter.name, this.state.chapter.content);
   }
 
   onClickSave(){
@@ -101,7 +108,6 @@ class BookEditorScreen extends Component {
       },
       titleField: {
         backgroundColor: 'white',
-        marginBottom: 10,
         'text-align': 'center'
       }
     };
@@ -123,12 +129,16 @@ class BookEditorScreen extends Component {
 
     return (
       <div style={styles.container} className="book-editor-screen">
-        <TextField style={styles.titleField}
-        id="text-field-default"
-        value={this.state.chapter.name}
-        floatingLabelText="Chapter's name"
-        floatingLabelFixed={true}
-        />
+        <div style={{paddingLeft:20, paddingRight: 20, backgroundColor: 'white', marginTop:10,marginBottom: 5,}}>
+          <TextField
+            style={styles.titleField}
+            value={this.state.chapter.name}
+            floatingLabelText="Chapter's name"
+            floatingLabelFixed={true}
+            fullWidth
+            onChange={event=>this.handleChangeChapterName(event)}
+          />
+        </div>
         <ReactQuill
           modules={reactQuillModules}
           value={this.state.chapter.content}

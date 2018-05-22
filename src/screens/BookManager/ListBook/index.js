@@ -60,14 +60,14 @@ class ListBookScreen extends Component {
       this.setState({
         openDialog: false,
         newBookName: "",
-        snackbarMessage: "Thêm thành công sách \"" + this.state.newBookName + "\"",
+        snackbarMessage: "Book \"" + this.state.newBookName + "\"" + "successfully added to your list.",
       });
 
       this.loadData();
     })
     .catch(err=>{
-      console.log("Lỗi thêm sách", err);
-      this.setState({snackbarMessage: "Thêm thất bại"});
+      console.log("Error adding book.", err);
+      this.setState({snackbarMessage: "Error adding book to your list."});
     });
   }
 
@@ -86,13 +86,13 @@ class ListBookScreen extends Component {
   onDeleteBook(book){
     deleteBook(book.id)
     .then(()=>{
-      this.setState({snackbarMessage: "Đã xoá \"" + book.name + "\""});
+      this.setState({snackbarMessage: "\"" + book.name + "\" has been removed."});
 
       this.loadData();
     })
     .catch(err=>{
-      console.log("Lỗi xoá sách", err);
-      this.setState({snackbarMessage: "Xoá thất bại"});
+      console.log("Error removing book.", err);
+      this.setState({snackbarMessage: "Error removing book from your list."});
     });
   }
 
@@ -109,6 +109,7 @@ class ListBookScreen extends Component {
         fontSize: "larger",
         paddingLeft: 10,
         paddingBottom: 3,
+        lineHeight: 1,
         'display': 'block',
       },
       bookCover: {
