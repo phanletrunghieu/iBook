@@ -107,8 +107,11 @@ class BookEditorScreen extends Component {
         right: 15,
       },
       titleField: {
+        paddingLeft: 20,
+        paddingRight: 20,
         backgroundColor: 'white',
-        'text-align': 'center'
+        marginTop:10,
+        marginBottom: 5,
       }
     };
 
@@ -129,7 +132,7 @@ class BookEditorScreen extends Component {
 
     return (
       <div style={styles.container} className="book-editor-screen">
-        <div style={{paddingLeft:20, paddingRight: 20, backgroundColor: 'white', marginTop:10,marginBottom: 5,}}>
+        <div>
           <TextField
             style={styles.titleField}
             value={this.state.chapter.name}
