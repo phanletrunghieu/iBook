@@ -10,6 +10,11 @@ import IconButton from 'material-ui/IconButton';
 import Subheader from 'material-ui/Subheader';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 
+import config from '../../../config';
+import AppBar from 'material-ui/AppBar';
+import NavigationMenuIcon from 'material-ui/svg-icons/navigation/menu';
+import ArrowBackIcon from 'material-ui/svg-icons/navigation/arrow-back';
+
 import AddIcon from 'material-ui/svg-icons/content/add';
 
 import browserHistory from "../../../utils/browserHistory";
@@ -22,6 +27,7 @@ class ChapterListScreen extends Component {
     book: {chapters: []},
     openDialog: false,
     newChapterName: "",
+    title_app_bar: config.app_name,
   };
 
   constructor(props) {
@@ -88,9 +94,13 @@ class ChapterListScreen extends Component {
         marginRight: 300,
       },
       subheader: {
+        fontFamily: 'Roboto',
+        fontWeight: 700,
+        fontSize: "larger",
+        color: "black",
+        'display': 'block',
         paddingTop: 15,
         paddingLeft: 20,
-        fontSize: 30
       }
     };
 
@@ -107,8 +117,43 @@ class ChapterListScreen extends Component {
       />,
     ];
 
+    var pathname = this.props.location.pathname;
+    //right trim
+    if (pathname.substring(pathname.length-1)==="/") {
+      pathname = pathname.substring(0, pathname.length);
+    }
+    var is_home = pathname==="/app";
+
     return (
       <div>
+        <AppBar
+          title={this.state.title_app_bar}
+          //onTitleClick={handleClick}
+          style={{position: 'fixed', top: 0}}
+          iconElementLeft={
+            <IconButton
+              onClick={is_home ? this.toggleDrawer : ()=>browserHistory.goBack()}
+            >
+              {
+                is_home ? <NavigationMenuIcon/> : <ArrowBackIcon />
+              }
+            </IconButton>
+          }
+          iconElementRight={
+            <IconMenu
+              iconButtonElement={
+                <IconButton><MoreVertIcon /></IconButton>
+              }
+              targetOrigin={{horizontal: 'right', vertical: 'top'}}
+              anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+            >
+              <MenuItem primaryText="Refresh" onClick={() => window.location.reload()} />
+              <MenuItem primaryText="Detail" onClick={() => browserHistory.push('/app/book/' + this.state.book.id + '/detail')} />
+              <MenuItem primaryText="View" onClick={() => browserHistory.push('/app/book/' + this.state.book.id + '/view')} />
+              <MenuItem primaryText="Help" />
+            </IconMenu>
+          }
+        />
         <List>
           <Subheader style={styles.subheader}>{this.state.book.name}</Subheader>
           {

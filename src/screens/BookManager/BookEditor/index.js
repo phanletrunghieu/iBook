@@ -4,6 +4,7 @@ import 'react-quill/dist/quill.snow.css'
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import Snackbar from 'material-ui/Snackbar';
+import TextField from 'material-ui/TextField';
 
 import SaveIcon from 'material-ui/svg-icons/content/save';
 
@@ -26,6 +27,7 @@ class BookEditorScreen extends Component {
     this.updateDimensions = this.updateDimensions.bind(this);
     this.loadData = this.loadData.bind(this);
     this.handleChangeBookContent = this.handleChangeBookContent.bind(this);
+    this.handleChangeChapterName = this.handleChangeChapterName.bind(this);
     this.save = this.save.bind(this);
     this.onClickSave = this.onClickSave.bind(this);
   }
@@ -71,9 +73,15 @@ class BookEditorScreen extends Component {
     this.setState({chapter});
   }
 
+  handleChangeChapterName(event) {
+    var chapter = this.state.chapter;
+    chapter.name = event.target.value;
+    this.setState({chapter});
+  }
+
   save(){
     console.log("save");
-    return editChapterContent(this.props.match.params.bookId, this.props.match.params.chapterId, this.state.chapter.content);
+    return editChapterContent(this.props.match.params.bookId, this.props.match.params.chapterId, this.state.chapter.name, this.state.chapter.content);
   }
 
   onClickSave(){
@@ -98,6 +106,13 @@ class BookEditorScreen extends Component {
         bottom: 15,
         right: 15,
       },
+      titleField: {
+        paddingLeft: 20,
+        paddingRight: 20,
+        backgroundColor: 'white',
+        marginTop:10,
+        marginBottom: 5,
+      }
     };
 
     var reactQuillModules = {
@@ -117,6 +132,16 @@ class BookEditorScreen extends Component {
 
     return (
       <div style={styles.container} className="book-editor-screen">
+        <div>
+          <TextField
+            style={styles.titleField}
+            value={this.state.chapter.name}
+            floatingLabelText="Chapter's name"
+            floatingLabelFixed={true}
+            fullWidth
+            onChange={event=>this.handleChangeChapterName(event)}
+          />
+        </div>
         <ReactQuill
           modules={reactQuillModules}
           value={this.state.chapter.content}

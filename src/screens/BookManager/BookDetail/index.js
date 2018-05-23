@@ -65,7 +65,7 @@ class BookDetailScreen extends Component {
       if(file.size>2097152)
       {
         this.setState({
-          SnackbarMessage:"Hình không được quá 2MB"
+          SnackbarMessage:"Image upload is limited to 2MB."
         })
 
         return;
@@ -134,7 +134,7 @@ class BookDetailScreen extends Component {
     updateBook(BookID,new_data)
     .then(()=>{
       this.setState({
-        SnackbarMessage:"Đã Lưu"
+        SnackbarMessage:"Saved"
       })
     })
 
@@ -189,7 +189,7 @@ class BookDetailScreen extends Component {
           <div style={styles.detailContainer}>
             <TextField
               inputStyle={{fontSize:40, }}
-              hintText="Tên Sách"
+              hintText="Book's name"
               fullWidth
               underlineShow={false}
               value={this.state.BookData.name}
@@ -199,7 +199,7 @@ class BookDetailScreen extends Component {
             <TextField
               inputStyle={{fontSize:20}}
               floatingLabelFixed={true}
-              floatingLabelText="Tác gỉả"
+              floatingLabelText="Author"
               value={this.state.BookData.author}
               onChange={(e,newAuthor)=>this.onChangeAuthor(newAuthor)}
             />
@@ -207,7 +207,7 @@ class BookDetailScreen extends Component {
             <TextField
               inputStyle={{fontSize:20}}
               floatingLabelFixed={true}
-              floatingLabelText="Mô tả nội dung "
+              floatingLabelText="Description"
               multiLine={true}
               fullWidth
               value={this.state.BookData.description}
