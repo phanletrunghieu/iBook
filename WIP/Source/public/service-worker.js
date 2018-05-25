@@ -5,7 +5,7 @@ var cacheName = 'weatherPWA-final-2';
 var filesToCache = [
   '/',
   '/index.html',
-  '/static/css/main.ea6abbd8.css',
+  '/static/css/main.255002bb.css',
   '/static/js/main.943988d1.js',
   '/lib/bootstrap-4.0.0-dist/css/bootstrap.min.css',
   '/lib/bootstrap-4.0.0-dist/js/bootstrap.min.js',
@@ -115,7 +115,6 @@ self.addEventListener('sync', function(event) {
       }
 
       console.log("Start sync...");
-      self.registration.showNotification("Start sync...");
 
       var list_promise=[];
       //local file
