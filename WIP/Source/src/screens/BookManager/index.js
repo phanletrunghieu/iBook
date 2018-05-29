@@ -19,7 +19,6 @@ import ListBookScreen from './ListBook';
 import BookEditorScreen from './BookEditor';
 import BookViewerScreen from './BookViewer';
 import ChapterListScreen from './ChapterList';
-import BookDetailScreen from './BookDetail';
 import SettingScreen from './Setting';
 
 import config from '../../config';
@@ -194,7 +193,6 @@ class BookManagerScreen extends Component {
         <div style={{marginTop: 64}}>
           <Switch>
             <Route exact path="/app" render={(props)=><ListBookScreen {...props} />} />
-            <Route exact path="/app/book/:bookId/detail" render={(props)=><BookDetailScreen {...props} />} />
             <Route exact path="/app/book/:bookId/view" render={(props)=><BookViewerScreen {...props} />} />
             <Route exact path="/app/book/:bookId/:chapterId" render={(props)=><BookEditorScreen {...props} />} />
             <Route exact path="/app/book/:bookId" render={(props)=><ChapterListScreen {...props} />} />

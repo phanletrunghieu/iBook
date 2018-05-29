@@ -18,6 +18,8 @@ import browserHistory from "../../../utils/browserHistory";
 import {addBook, getBooksData, deleteBook} from "../../../api/BookAPI";
 import {formatDate} from "../../../utils/helper"
 
+import BookDetailDialog from '../BookDetail';
+
 class ListBookScreen extends Component {
 
   state={
@@ -92,7 +94,8 @@ class ListBookScreen extends Component {
   }
 
   onEditInfoBook(book){
-    browserHistory.push('/app/book/'+book.id+'/detail');
+    // browserHistory.push('/app/book/'+book.id+'/detail');
+    this.bookDetailDialog.show(book);
   }
 
   onDeleteBook(book){
@@ -111,7 +114,7 @@ class ListBookScreen extends Component {
   renderBookItem(book){
     var styles={
       listItem: {
-        height: 255,
+        height: "auto",
       },
       listItemContainer: {
         paddingLeft: 170
@@ -136,11 +139,12 @@ class ListBookScreen extends Component {
         innerDivStyle={styles.listItemContainer}
         primaryText={<span style={styles.bookTitle}>{book.name}</span>}
         secondaryText={
-          <div style={{height: 255, paddingLeft: 10, 'white-space': 'unset'}}>
-            <div>{"Date created: " + formatDate((new Date(book.date_created)).toString())}</div>
-            <div>{"Last updated: " + formatDate((new Date(book.date_modified)).toString())}</div>
-            <div>{"Author: " + book.author}</div>
-            <div>{"Description: " + book.description}</div>
+          <div style={{height: 255, paddingLeft: 10, whiteSpace: 'unset'}}>
+            <div style={{paddingBottom:5}}>{"Date created: " + formatDate((new Date(book.date_created)).toString())}</div>
+            <div style={{paddingBottom:5}}>{"Last updated: " + formatDate((new Date(book.date_modified)).toString())}</div>
+            <div style={{paddingBottom:5}}>{"Author: " + book.author}</div>
+            <div style={{paddingBottom:5}}>{"Chapter: " + book.chapter}</div>
+            <div style={{paddingBottom:5}}>{"Description: " + book.description}</div>
           </div>
         }
         leftAvatar={
@@ -182,6 +186,7 @@ class ListBookScreen extends Component {
         marginLeft: 0,
         marginRight:0,
 
+
       },
       colLeft: {
         paddingLeft: 0,
@@ -219,6 +224,7 @@ class ListBookScreen extends Component {
     return (
       <div>
         <div className="row" style={styles.row}>
+          <div className="col-md-2" style={{backgroundColor:"gray"}}></div>
           <div className="col-md-4" style={styles.colLeft}>
             <List>
               {
@@ -237,6 +243,7 @@ class ListBookScreen extends Component {
               }
             </List>
           </div>
+          <div className="col-md-2" style={{backgroundColor:"gray"}}></div>
         </div>
         <FloatingActionButton
           style={styles.floatingActionButton}
@@ -263,6 +270,11 @@ class ListBookScreen extends Component {
             onKeyPress={e=>{if(e.key === 'Enter'){this.onAddNewBook()}}}
           />
         </Dialog>
+
+        <BookDetailDialog
+          ref={r=>this.bookDetailDialog=r}
+          onClose={this.loadData}
+        />
 
         <Snackbar
           open={this.state.snackbarMessage !== ""}

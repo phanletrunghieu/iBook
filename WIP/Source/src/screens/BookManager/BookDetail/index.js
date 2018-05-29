@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import TextField from 'material-ui/TextField';
 
 import Avatar from 'material-ui/Avatar';
+import Dialog from 'material-ui/Dialog';
 import Chip from 'material-ui/Chip';
 import FontIcon from 'material-ui/FontIcon';
 import SvgIconFace from 'material-ui/svg-icons/action/face';
@@ -25,12 +26,13 @@ import config from '../../../config';
 
 
 
-class BookDetailScreen extends Component {
+class BookDetailDialog extends Component {
 
   state={
     BookData: {},
     SnackbarMessage:"",
     deviceWidth: 0,
+    openDialog: false,
   };
 
   constructor(props){
@@ -38,18 +40,19 @@ class BookDetailScreen extends Component {
 
     this.updateDimensions = this.updateDimensions.bind(this);
     this.onSelectImage = this.onSelectImage.bind(this);
-    this.loadData=this.loadData.bind(this);
     this.onChangeName=this.onChangeName.bind(this);
     this.onChangeImage=this.onChangeImage.bind(this);
     this.onChangeAuthor=this.onChangeAuthor.bind(this);
     this.onChangeDescription=this.onChangeDescription.bind(this);
     this.save=this.save.bind(this);
+
+    this.show=this.show.bind(this);
+    this.hide=this.hide.bind(this);
   }
 
   componentDidMount(){
     window.addEventListener("resize", this.updateDimensions);
     this.updateDimensions();
-    this.loadData();
   }
   componentWillUnmount() {
     window.removeEventListener("resize", this.updateDimensions);
@@ -116,29 +119,28 @@ class BookDetailScreen extends Component {
     this.setState({BookData});
   }
 
-
-  loadData()
-  {
-    var BookId=this.props.match.params.bookId;
-    getBookByID(BookId)
-    .then(BookData=>
-      {
-        this.setState({BookData})
-      }
-    )
-  }
-
   save()
   {
     var new_data=this.state.BookData;
     var BookID=new_data.id;
     updateBook(BookID,new_data)
     .then(()=>{
-      this.setState({
-        SnackbarMessage:"Saved"
-      })
+      if(this.props.onClose)
+        this.props.onClose();
+      this.hide();
     })
 
+  }
+
+  show(book){
+    this.setState({
+      openDialog: true,
+      BookData: book
+    });
+  }
+
+  hide(){
+    this.setState({openDialog: false});
   }
 
   render() {
@@ -147,7 +149,7 @@ class BookDetailScreen extends Component {
     var styles={
       container: {
         overflow:"hidden",
-        padding: is_desktop ? "150px 50px 0" : "10px 50px 0",
+        padding: is_desktop ? "10px 50px 0" : "0",
       },
       coverContainer: {
         position: "relative",
@@ -177,8 +179,29 @@ class BookDetailScreen extends Component {
       },
     }
 
+    const actions = [
+      <FlatButton
+        label="Cancel"
+        primary={true}
+        onClick={this.hide}
+      />,
+      <FlatButton
+        label="OK"
+        primary={true}
+        onClick={this.save}
+      />,
+    ];
+
     return (
-      <div>
+      <Dialog
+        title="Edit"
+        actions={actions}
+        modal={false}
+        contentStyle={styles.dialogContentStyle}
+        onRequestClose={()=>this.setState({openDialog: false})}
+        autoScrollBodyContent={true}
+        open={this.state.openDialog}
+      >
         <div style={styles.container}>
           <div style={styles.coverContainer}>
             <img className="book-cover" src={this.state.BookData.image} alt="Book cover" style={{width:200, height: 300}}  />
@@ -217,26 +240,6 @@ class BookDetailScreen extends Component {
           </div>
         </div>
 
-        <div style={{float:"right"}}>
-          {
-            this.state.deviceWidth >= 992 ?
-            <RaisedButton
-              label="Save"
-              primary={true}
-              icon={<SaveIcon />}
-              style={styles.floatingActionButton}
-              onClick={this.save}
-            />
-            :
-            <FloatingActionButton
-              style={styles.floatingActionButton}
-              onClick={this.save}
-              >
-              <SaveIcon/>
-              </FloatingActionButton>
-            }
-        </div>
-
         <Snackbar
           bodyStyle={{textAlign:"center"}}
           open={this.state.SnackbarMessage!==""}
@@ -245,9 +248,9 @@ class BookDetailScreen extends Component {
           onRequestClose={()=>this.setState({SnackbarMessage:""})}
         />
 
-      </div>
+      </Dialog>
     );
   }
 }
 
-export default BookDetailScreen;
+export default BookDetailDialog;

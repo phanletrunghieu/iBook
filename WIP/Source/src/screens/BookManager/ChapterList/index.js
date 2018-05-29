@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {List, ListItem} from 'material-ui/List';
+import Card from 'material-ui/Card';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
@@ -44,6 +45,7 @@ class ChapterListScreen extends Component {
   constructor(props) {
     super(props);
 
+    this.updateDimensions = this.updateDimensions.bind(this);
     this.loadData = this.loadData.bind(this);
     this.onAddNewChapter = this.onAddNewChapter.bind(this);
     this.onEditChapter = this.onEditChapter.bind(this);
@@ -53,6 +55,10 @@ class ChapterListScreen extends Component {
 
   componentDidMount() {
     this.loadData();
+
+    window.addEventListener("resize", this.updateDimensions);
+    this.updateDimensions();
+
   }
 
   loadData() {
@@ -60,6 +66,10 @@ class ChapterListScreen extends Component {
     .then(book=> {
       this.setState({book});
     });
+  }
+
+  updateDimensions() {
+    this.setState({deviceWidth: window.innerWidth});
   }
 
   onAddNewChapter(){
@@ -108,6 +118,9 @@ class ChapterListScreen extends Component {
   }
 
   render() {
+
+    var is_desktop = this.state.deviceWidth >= 992;
+
     var styles={
       floatingActionButton: {
         position: 'fixed',
@@ -133,7 +146,11 @@ class ChapterListScreen extends Component {
         fontSize: "larger",
         color: "black",
         'display': 'block',
-      }
+      },
+      listChapter: {
+        backgroundColor:"grey",
+        padding: is_desktop? "20px 300px": "0",
+      },
     };
 
     var pathname = this.props.location.pathname;
@@ -199,30 +216,33 @@ class ChapterListScreen extends Component {
             </IconMenu>
           }
         />
-
-        <List>
-          <Subheader style={styles.subheader}>{this.state.book.name}</Subheader>
-          {
-            this.state.book.chapters.map(chapter=>(
-              <ListItem
-                style={styles.listItem}
-                key={chapter.id}
-                primaryText={chapter.name}
-                rightIconButton={
-                  <IconMenu
-                    iconButtonElement={<IconButton><MoreVertIcon /></IconButton>}
-                    anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-                    targetOrigin={{horizontal: 'right', vertical: 'top'}}
-                  >
-                    <MenuItem primaryText="Rename" onClick={()=>this.setState({openDialogRenameChapter: true, renameChapterName: chapter.name, selectedChapter: chapter})} />
-                    <MenuItem primaryText="Delete" onClick={()=>this.onShowConfirmDialog(chapter)} />
-                  </IconMenu>
-                }
-                onClick={()=>this.onEditChapter(this.state.book.id, chapter)}
-              />
-            ))
-          }
-        </List>
+        <div style={styles.listChapter}>
+          <Card>
+            <List>
+              <Subheader style={styles.subheader}>{this.state.book.name}</Subheader>
+              {
+                this.state.book.chapters.map(chapter=>(
+                  <ListItem
+                    style={styles.listItem}
+                    key={chapter.id}
+                    primaryText={chapter.name}
+                    rightIconButton={
+                      <IconMenu
+                        iconButtonElement={<IconButton><MoreVertIcon /></IconButton>}
+                        anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+                        targetOrigin={{horizontal: 'right', vertical: 'top'}}
+                      >
+                        <MenuItem primaryText="Rename" onClick={()=>this.setState({openDialogRenameChapter: true, renameChapterName: chapter.name, selectedChapter: chapter})} />
+                        <MenuItem primaryText="Delete" onClick={()=>this.onShowConfirmDialog(chapter)} />
+                      </IconMenu>
+                    }
+                    onClick={()=>this.onEditChapter(this.state.book.id, chapter)}
+                  />
+                ))
+              }
+            </List>
+          </Card>
+        </div>
         <FloatingActionButton
           style={styles.floatingActionButton}
           onClick={()=>this.setState({openDialogAddChapter: true})}
