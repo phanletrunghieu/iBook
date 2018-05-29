@@ -7,6 +7,8 @@ import Snackbar from 'material-ui/Snackbar';
 
 import SaveIcon from 'material-ui/svg-icons/content/save';
 
+import MyEditor from "../../../components/CKEditor";
+
 import {getChapterByID, editChapterContent} from "../../../api/BookAPI";
 import {getTimeAutoSave, setTimeAutoSave, getTimeAutoSync, setTimeAutoSync} from "../../../api/SettingAPI";
 
@@ -89,39 +91,19 @@ class BookEditorScreen extends Component {
     var is_desktop = this.state.deviceWidth >= 992;
 
     var styles={
-      container: {
-        backgroundColor: "#ccc",
-        padding: is_desktop ? "10px 10%" : "0",
-      },
       floatingActionButton: {
         position: 'fixed',
         bottom: 15,
         right: 15,
+        zIndex: 100,
       },
-    };
-
-    var reactQuillModules = {
-      toolbar: [
-        [{ 'font': [] }],
-        [{ 'size': ['small', false, 'large', 'huge'] }],
-        ['bold', 'italic', 'underline','strike', 'blockquote'],
-        [{ 'color': [] }, { 'background': [] }],
-        [{ 'header': 1 }, { 'header': 2 }],
-        [{'list': 'ordered'}, {'list': 'bullet'}, {'indent': '-1'}, {'indent': '+1'}],
-        ['link', 'image'],
-        [{ 'script': 'sub'}, { 'script': 'super' }],
-        [{ 'align': [] }],
-        ['clean'],
-      ],
     };
 
     return (
       <div style={styles.container} className="book-editor-screen">
-        <ReactQuill
-          modules={reactQuillModules}
-          value={this.state.chapter.content}
+        <MyEditor
+          content={this.state.chapter.content}
           onChange={value=>this.handleChangeBookContent(value)}
-          style={{height: 1000, backgroundColor: "#fff"}}
         />
         {
           this.state.deviceWidth >= 992 ?
