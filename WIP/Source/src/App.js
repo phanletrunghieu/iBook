@@ -8,6 +8,7 @@ import browserHistory from "./utils/browserHistory";
 
 import HomeScreen from './screens/Home';
 import BookManagerScreen from './screens/BookManager';
+import BookViewerScreen from './screens/BookViewer';
 
 class App extends Component {
 
@@ -35,6 +36,7 @@ class App extends Component {
         <Router history={browserHistory}>
           <div>
             <Route exact path="/" component={HomeScreen}/>
+            <Route exact path="/book/:bookId/:chapterId" render={(props)=><BookViewerScreen {...props} />} />
             <Route path="/app" component={BookManagerScreen}/>
           </div>
         </Router>

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {List, ListItem} from 'material-ui/List';
 import Snackbar from 'material-ui/Snackbar';
 import Avatar from 'material-ui/Avatar';
+import Card from 'material-ui/Card';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
@@ -90,7 +91,7 @@ class ListBookScreen extends Component {
   }
 
   onViewBook(book){
-    browserHistory.push('/app/book/'+book.id+'/view');
+    browserHistory.push('/book/'+book.id+'/'+book.chapters[0].id);
   }
 
   onEditInfoBook(book){
@@ -173,6 +174,10 @@ class ListBookScreen extends Component {
     var is_desktop = this.state.deviceWidth >= 992;
 
     var styles={
+      container: {
+        backgroundColor: "#eee",
+        padding: is_desktop ? "40px 100px" : 0,
+      },
       floatingActionButton: {
         position: 'fixed',
         bottom: 15,
@@ -185,8 +190,6 @@ class ListBookScreen extends Component {
       row: {
         marginLeft: 0,
         marginRight:0,
-
-
       },
       colLeft: {
         paddingLeft: 0,
@@ -222,29 +225,29 @@ class ListBookScreen extends Component {
     }
 
     return (
-      <div>
-        <div className="row" style={styles.row}>
-          <div className="col-md-2" style={{backgroundColor:"gray"}}></div>
-          <div className="col-md-4" style={styles.colLeft}>
-            <List>
-              {
-                list_1.map(book=>(
-                  this.renderBookItem(book)
-                ))
-              }
-            </List>
+      <div style={styles.container}>
+        <Card style={{minHeight: "calc(100vh - 144px)"}}>
+          <div className="row" style={styles.row}>
+            <div className="col-md-6" style={styles.colLeft}>
+              <List>
+                {
+                  list_1.map(book=>(
+                    this.renderBookItem(book)
+                  ))
+                }
+              </List>
+            </div>
+            <div className="col-md-6" style={styles.colRight}>
+              <List>
+                {
+                  list_2.map(book=>(
+                    this.renderBookItem(book)
+                  ))
+                }
+              </List>
+            </div>
           </div>
-          <div className="col-md-4" style={styles.colRight}>
-            <List>
-              {
-                list_2.map(book=>(
-                  this.renderBookItem(book)
-                ))
-              }
-            </List>
-          </div>
-          <div className="col-md-2" style={{backgroundColor:"gray"}}></div>
-        </div>
+        </Card>
         <FloatingActionButton
           style={styles.floatingActionButton}
           onClick={()=>this.setState({openDialog: true})}

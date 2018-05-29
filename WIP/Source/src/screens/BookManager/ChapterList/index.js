@@ -148,8 +148,9 @@ class ChapterListScreen extends Component {
         'display': 'block',
       },
       listChapter: {
-        backgroundColor:"grey",
-        padding: is_desktop? "20px 300px": "0",
+        backgroundColor:"#eee",
+        padding: is_desktop ? "40px 300px": "0",
+        minHeight: "calc(100vh - 64px)",
       },
     };
 

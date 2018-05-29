@@ -4,6 +4,7 @@ import FloatingActionButton from 'material-ui/FloatingActionButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import Dialog from 'material-ui/Dialog';
 import Snackbar from 'material-ui/Snackbar';
+import DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
 
 import SortIcon from 'material-ui/svg-icons/content/sort';
 
@@ -30,6 +31,8 @@ class BookViewerScreen extends Component {
   componentDidMount() {
     window.addEventListener("resize", this.updateDimensions);
     this.loadData();
+
+    DecoupledEditor.create();
   }
   componentWillUnmount() {
     window.removeEventListener("resize", this.updateDimensions);
@@ -94,7 +97,7 @@ class BookViewerScreen extends Component {
           </div>
           {
             this.state.chapters ?
-            <div style={styles.content} dangerouslySetInnerHTML={{__html: this.state.chapters[this.state.selectChapterId].content}}/>
+            <div className="ck-content" style={styles.content} dangerouslySetInnerHTML={{__html: this.state.chapters[this.state.selectChapterId].content}}/>
             : null
           }
         </div>

@@ -193,7 +193,6 @@ class BookManagerScreen extends Component {
         <div style={{marginTop: 64}}>
           <Switch>
             <Route exact path="/app" render={(props)=><ListBookScreen {...props} />} />
-            <Route exact path="/app/book/:bookId/view" render={(props)=><BookViewerScreen {...props} />} />
             <Route exact path="/app/book/:bookId/:chapterId" render={(props)=><BookEditorScreen {...props} />} />
             <Route exact path="/app/book/:bookId" render={(props)=><ChapterListScreen {...props} />} />
             <Route exact path="/app/setting" render={(props)=><SettingScreen {...props} />} />

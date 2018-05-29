@@ -101,7 +101,6 @@ class BookEditorScreen extends Component {
     var styles={
       container: {
         backgroundColor: "#ccc",
-        padding: is_desktop ? "10px 10%" : "0",
       },
 
       titleField: {
@@ -120,7 +119,7 @@ class BookEditorScreen extends Component {
 
     return (
       <div style={styles.container} className="book-editor-screen">
-        <div style={{paddingLeft:20, paddingRight: 20, backgroundColor: 'white', marginTop:10,marginBottom: 5,}}>
+        <div style={{paddingLeft:20, paddingRight: 20, backgroundColor: 'white', marginTop:10,}}>
           <TextField
             style={styles.titleField}
             value={this.state.chapter.name}

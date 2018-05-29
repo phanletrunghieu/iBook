@@ -1,0 +1,105 @@
+.book-viewer-screen{
+  .navbar-brand {
+    margin-left: 10%;
+    color: white !important;
+  }
+  .nav-link {
+    color: white !important;
+  }
+  .nav-link:hover {
+    background-color: #2f566d;
+  }
+  .bg-light {
+    background-color: #14425d !important;
+  }
+  .navbar-brand img {
+    max-height: 30px;
+  }
+
+  .dropdown-menu {
+    background-color: #2f566d;
+  }
+  .dropdown-item {
+    color: white;
+  }
+  .dropdown-item:hover {
+    background-color: #14425d !important;
+    color: white;
+  }
+
+  .dropdown-menu {
+    width: 300px;
+  }
+  .option {
+    display: ruby !important;
+    margin: 0;
+    color: white;
+  }
+  br {
+    margin-top: 25px;
+  }
+  /* content */
+  .title {
+    margin: 10px 0;
+  }
+  .book-name {
+    text-transform: uppercase;
+    font-size: 28px;
+    color: #690;
+  }
+  .book-chapter {
+    font-size: 20px;
+  }
+
+  .btn-group {
+    margin-top: 15px;
+    line-height: 32px;
+
+    a{
+      cursor: pointer;
+      &:hover{
+        color: white;
+      }
+
+      i{
+        margin: 0 5px;
+      }
+    }
+  }
+  .select-chapter {
+    width: 140px;
+  margin-left: 2px;
+  margin-right: 2px;
+  }
+  .btn-nav a{
+    border: solid 1px #5cb85c;
+    border-radius: 2px;
+    background-color: #5cb85c;
+    color: white;
+    padding: 2px 8px;
+  }
+  .btn-nav a:hover{
+    text-decoration: none;
+  }
+  /*Responsive*/
+  @media only screen and (max-width: 600px) {
+    .option {
+       display: list-item!important;
+    }
+    .dropdown-menu {
+      width: 100%;
+    }
+    .btn-nav a span{
+      display: none;
+    }
+    .btn-nav a {
+      width: auto;
+    }
+    .next {
+      display: inline !important;
+    }
+    br {
+      display: none;
+    }
+  }
+}

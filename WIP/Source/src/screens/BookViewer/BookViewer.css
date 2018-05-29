@@ -1,0 +1,71 @@
+.book-viewer-screen {
+  /* content */
+  /*Responsive*/ }
+  .book-viewer-screen .navbar-brand {
+    margin-left: 10%;
+    color: white !important; }
+  .book-viewer-screen .nav-link {
+    color: white !important; }
+  .book-viewer-screen .nav-link:hover {
+    background-color: #2f566d; }
+  .book-viewer-screen .bg-light {
+    background-color: #14425d !important; }
+  .book-viewer-screen .navbar-brand img {
+    max-height: 30px; }
+  .book-viewer-screen .dropdown-menu {
+    background-color: #2f566d; }
+  .book-viewer-screen .dropdown-item {
+    color: white; }
+  .book-viewer-screen .dropdown-item:hover {
+    background-color: #14425d !important;
+    color: white; }
+  .book-viewer-screen .dropdown-menu {
+    width: 300px; }
+  .book-viewer-screen .option {
+    display: ruby !important;
+    margin: 0;
+    color: white; }
+  .book-viewer-screen br {
+    margin-top: 25px; }
+  .book-viewer-screen .title {
+    margin: 10px 0; }
+  .book-viewer-screen .book-name {
+    text-transform: uppercase;
+    font-size: 28px;
+    color: #690; }
+  .book-viewer-screen .book-chapter {
+    font-size: 20px; }
+  .book-viewer-screen .btn-group {
+    margin-top: 15px;
+    line-height: 32px; }
+    .book-viewer-screen .btn-group a {
+      cursor: pointer; }
+      .book-viewer-screen .btn-group a:hover {
+        color: white; }
+      .book-viewer-screen .btn-group a i {
+        margin: 0 5px; }
+  .book-viewer-screen .select-chapter {
+    width: 140px;
+    margin-left: 2px;
+    margin-right: 2px; }
+  .book-viewer-screen .btn-nav a {
+    border: solid 1px #5cb85c;
+    border-radius: 2px;
+    background-color: #5cb85c;
+    color: white;
+    padding: 2px 8px; }
+  .book-viewer-screen .btn-nav a:hover {
+    text-decoration: none; }
+  @media only screen and (max-width: 600px) {
+    .book-viewer-screen .option {
+      display: list-item !important; }
+    .book-viewer-screen .dropdown-menu {
+      width: 100%; }
+    .book-viewer-screen .btn-nav a span {
+      display: none; }
+    .book-viewer-screen .btn-nav a {
+      width: auto; }
+    .book-viewer-screen .next {
+      display: inline !important; }
+    .book-viewer-screen br {
+      display: none; } }
