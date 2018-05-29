@@ -8,20 +8,30 @@ import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
 import IconButton from 'material-ui/IconButton';
 import Subheader from 'material-ui/Subheader';
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
+import Snackbar from 'material-ui/Snackbar';
 
+import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import AddIcon from 'material-ui/svg-icons/content/add';
+
+import ConfirmBox from "../../../components/ConfirmBox";
 
 import browserHistory from "../../../utils/browserHistory";
 
-import {getBookByID, addChapter, deleteChapter} from "../../../api/BookAPI";
+import {getBookByID, addChapter, deleteChapter, editChapterName} from "../../../api/BookAPI";
 
 
 class ChapterListScreen extends Component {
   state={
     book: {chapters: []},
-    openDialog: false,
+    openDialogAddChapter: false,
+    openDialogRenameChapter: false,
+
     newChapterName: "",
+    renameChapterName: "",
+
+    selectedChapter: null,
+
+    snackbarMessage: "",
   };
 
   constructor(props) {
@@ -30,6 +40,8 @@ class ChapterListScreen extends Component {
     this.loadData = this.loadData.bind(this);
     this.onAddNewChapter = this.onAddNewChapter.bind(this);
     this.onEditChapter = this.onEditChapter.bind(this);
+    this.onDeleteChapter = this.onDeleteChapter.bind(this);
+    this.onRenameChapter = this.onRenameChapter.bind(this);
   }
 
   componentDidMount() {
@@ -47,7 +59,7 @@ class ChapterListScreen extends Component {
     addChapter(this.state.book.id, this.state.newChapterName)
     .then(()=>{
       this.setState({
-        openDialog: false,
+        openDialogAddChapter: false,
         newChapterName: "",
       });
 
@@ -59,11 +71,32 @@ class ChapterListScreen extends Component {
     browserHistory.push('/app/book/' + bookId + '/' + chapter.id);
   }
 
-  onDeleteChapter(chapter_id) {
-    deleteChapter(this.state.book.id, chapter_id)
+  onShowConfirmDialog(chapter){
+    this.confirmBoxDelete.setState({
+      show: true,
+      data: chapter,
+      title: "Confirm",
+      body: "Delete chapter \"" + chapter.name + "\"?",
+    });
+  }
+
+  onDeleteChapter() {
+    var chapter=this.confirmBoxDelete.state.data;
+    deleteChapter(this.state.book.id, chapter.id)
     .then(() => {
       this.loadData();
-      console.log("Xóa thành công");
+      this.setState({snackbarMessage: "Delete successfully!"})
+    });
+  }
+
+  onRenameChapter(){
+    editChapterName(this.state.book.id, this.state.selectedChapter.id, this.state.renameChapterName)
+    .then(() => {
+      this.loadData();
+      this.setState({
+        openDialogRenameChapter: false,
+        snackbarMessage: "Rename successfully!"
+      })
     });
   }
 
@@ -94,16 +127,29 @@ class ChapterListScreen extends Component {
       }
     };
 
-    const actions = [
+    const actionsAddChapter = [
       <FlatButton
         label="Cancel"
         primary={true}
-        onClick={()=>this.setState({openDialog: false})}
+        onClick={()=>this.setState({openDialogAddChapter: false})}
       />,
       <FlatButton
         label="OK"
         primary={true}
         onClick={this.onAddNewChapter}
+      />,
+    ];
+
+    const actionsRenameChapter = [
+      <FlatButton
+        label="Cancel"
+        primary={true}
+        onClick={()=>this.setState({openDialogRenameChapter: false})}
+      />,
+      <FlatButton
+        label="OK"
+        primary={true}
+        onClick={this.onRenameChapter}
       />,
     ];
 
@@ -123,7 +169,8 @@ class ChapterListScreen extends Component {
                     anchorOrigin={{horizontal: 'right', vertical: 'top'}}
                     targetOrigin={{horizontal: 'right', vertical: 'top'}}
                   >
-                    <MenuItem primaryText="Delete" onClick={()=>this.onDeleteChapter(chapter.id)} />
+                    <MenuItem primaryText="Rename" onClick={()=>this.setState({openDialogRenameChapter: true, renameChapterName: chapter.name, selectedChapter: chapter})} />
+                    <MenuItem primaryText="Delete" onClick={()=>this.onShowConfirmDialog(chapter)} />
                   </IconMenu>
                 }
                 onClick={()=>this.onEditChapter(this.state.book.id, chapter)}
@@ -133,19 +180,19 @@ class ChapterListScreen extends Component {
         </List>
         <FloatingActionButton
           style={styles.floatingActionButton}
-          onClick={()=>this.setState({openDialog: true})}
+          onClick={()=>this.setState({openDialogAddChapter: true})}
         >
           <AddIcon/>
         </FloatingActionButton>
 
         <Dialog
           title="Add new chapter"
-          actions={actions}
+          actions={actionsAddChapter}
           modal={false}
           contentStyle={styles.dialogContentStyle}
-          onRequestClose={()=>this.setState({openDialog: false})}
+          onRequestClose={()=>this.setState({openDialogAddChapter: false})}
           autoScrollBodyContent={true}
-          open={this.state.openDialog}
+          open={this.state.openDialogAddChapter}
         >
           <TextField
             fullWidth
@@ -156,6 +203,35 @@ class ChapterListScreen extends Component {
             onKeyPress={e=>{if(e.key === 'Enter'){this.onAddNewChapter()}}}
           />
         </Dialog>
+
+        <Dialog
+          title="Rename chapter"
+          actions={actionsRenameChapter}
+          modal={false}
+          contentStyle={styles.dialogContentStyle}
+          onRequestClose={()=>this.setState({openDialogRenameChapter: false})}
+          autoScrollBodyContent={true}
+          open={this.state.openDialogRenameChapter}
+        >
+          <TextField
+            fullWidth
+            autoFocus
+            floatingLabelText="Chapter's name"
+            value={this.state.renameChapterName}
+            onChange={(e, renameChapterName)=>this.setState({renameChapterName})}
+            onKeyPress={e=>{if(e.key === 'Enter'){this.onRenameChapter()}}}
+          />
+        </Dialog>
+
+        <ConfirmBox ref={confirmBoxDelete=>this.confirmBoxDelete=confirmBoxDelete} onClickOk={this.onDeleteChapter} />
+
+        <Snackbar
+          open={this.state.snackbarMessage !== ""}
+          message={this.state.snackbarMessage}
+          autoHideDuration={4000}
+          onRequestClose={()=>this.setState({snackbarMessage: ""})}
+          bodyStyle={{textAlign: "center"}}
+        />
       </div>
     );
   }
