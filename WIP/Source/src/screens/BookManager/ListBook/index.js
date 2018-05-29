@@ -60,14 +60,14 @@ class ListBookScreen extends Component {
       this.setState({
         openDialog: false,
         newBookName: "",
-        snackbarMessage: "Thêm thành công sách \"" + this.state.newBookName + "\"",
+        snackbarMessage: "Book \"" + this.state.newBookName + "\"" + "successfully added to your list.",
       });
 
       this.loadData();
     })
     .catch(err=>{
-      console.log("Lỗi thêm sách", err);
-      this.setState({snackbarMessage: "Thêm thất bại"});
+      console.log("Error adding book.", err);
+      this.setState({snackbarMessage: "Error adding book to your list."});
     });
   }
 
@@ -86,13 +86,13 @@ class ListBookScreen extends Component {
   onDeleteBook(book){
     deleteBook(book.id)
     .then(()=>{
-      this.setState({snackbarMessage: "Đã xoá \"" + book.name + "\""});
+      this.setState({snackbarMessage: "\"" + book.name + "\" has been removed."});
 
       this.loadData();
     })
     .catch(err=>{
-      console.log("Lỗi xoá sách", err);
-      this.setState({snackbarMessage: "Xoá thất bại"});
+      console.log("Error removing book.", err);
+      this.setState({snackbarMessage: "Error removing book from your list."});
     });
   }
 
@@ -105,8 +105,11 @@ class ListBookScreen extends Component {
         paddingLeft: 170
       },
       bookTitle:{
-        fontWeight: 700,
         fontSize: "larger",
+        paddingLeft: 10,
+        paddingBottom: 3,
+        lineHeight: 1,
+        'display': 'block',
       },
       bookCover: {
         height: 225,
@@ -121,9 +124,11 @@ class ListBookScreen extends Component {
         innerDivStyle={styles.listItemContainer}
         primaryText={<span style={styles.bookTitle}>{book.name}</span>}
         secondaryText={
-          <div style={{height: 100}}>
-            <div>{"Ngày tạo:\u00A0\u00A0\u00A0" + formatDate((new Date(book.date_created)).toString())}</div>
-            <div>{"Ngày cập nhật gần nhất: " + formatDate((new Date(book.date_modified)).toString())}</div>
+          <div style={{height: 255, paddingLeft: 10, 'white-space': 'unset'}}>
+            <div>{"Date created: " + formatDate((new Date(book.date_created)).toString())}</div>
+            <div>{"Last updated: " + formatDate((new Date(book.date_modified)).toString())}</div>
+            <div>{"Author: " + book.author}</div>
+            <div>{"Description: " + book.description}</div>
           </div>
         }
         leftAvatar={
