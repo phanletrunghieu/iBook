@@ -27,9 +27,9 @@ class BookEditorScreen extends Component {
     this.updateDimensions = this.updateDimensions.bind(this);
     this.loadData = this.loadData.bind(this);
     this.handleChangeBookContent = this.handleChangeBookContent.bind(this);
-    this.handleChangeChapterName = this.handleChangeChapterName.bind(this);
     this.save = this.save.bind(this);
     this.onClickSave = this.onClickSave.bind(this);
+    this.handleChangeChapterName = this.handleChangeChapterName.bind(this);
   }
 
   componentWillMount() {
@@ -101,18 +101,18 @@ class BookEditorScreen extends Component {
         backgroundColor: "#ccc",
         padding: is_desktop ? "10px 10%" : "0",
       },
+
+      titleField: {
+        backgroundColor: 'white',
+        marginBottom: 10,
+        'text-align': 'center'
+      },
+
       floatingActionButton: {
         position: 'fixed',
         bottom: 15,
         right: 15,
       },
-      titleField: {
-        paddingLeft: 20,
-        paddingRight: 20,
-        backgroundColor: 'white',
-        marginTop:10,
-        marginBottom: 5,
-      }
     };
 
     var reactQuillModules = {
@@ -132,7 +132,8 @@ class BookEditorScreen extends Component {
 
     return (
       <div style={styles.container} className="book-editor-screen">
-        <div>
+
+        <div style={{paddingLeft:20, paddingRight: 20, backgroundColor: 'white', marginTop:10,marginBottom: 5,}}>
           <TextField
             style={styles.titleField}
             value={this.state.chapter.name}
@@ -142,6 +143,7 @@ class BookEditorScreen extends Component {
             onChange={event=>this.handleChangeChapterName(event)}
           />
         </div>
+
         <ReactQuill
           modules={reactQuillModules}
           value={this.state.chapter.content}

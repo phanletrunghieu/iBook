@@ -102,10 +102,9 @@ class ListBookScreen extends Component {
         height: 255,
       },
       listItemContainer: {
-        paddingLeft: 170,
+        paddingLeft: 170
       },
       bookTitle:{
-        fontWeight: 700,
         fontSize: "larger",
         paddingLeft: 10,
         paddingBottom: 3,
