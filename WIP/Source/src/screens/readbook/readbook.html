@@ -1,0 +1,279 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"> -->
+    
+    <title>Readbook Page</title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="readbook.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+    <style type="text/css">
+    	/* Menu */
+    	.navbar-brand {
+    		margin-left: 10%;
+    		color: white !important;
+    	}
+    	.nav-link {
+    		color: white !important;
+    	}
+    	.nav-link:hover {
+    		background-color: #2f566d;
+    	}
+    	.bg-light {
+    		background-color: #14425d !important;
+    	}
+    	.navbar-brand img {
+    		max-height: 30px;	
+    	}
+
+    	.dropdown-menu {
+    		background-color: #2f566d;
+    	}
+    	.dropdown-item {
+    		color: white;
+    	}
+    	.dropdown-item:hover {
+    		background-color: #14425d !important;
+    		color: white;
+    	}
+
+    	.dropdown-menu {
+    		width: 300px;
+    	}
+    	.option {
+    		display: ruby !important;
+    		margin: 0;
+    		color: white;
+    	}
+    	br {
+    		margin-top: 25px;
+    	}
+    	/* content */
+    	.title {
+    		margin-top: 10px;
+    	}
+    	.book-name {
+    		text-transform: uppercase;
+    		font-size: 28px;
+    		color: #690;
+    	}
+    	.book-chapter {
+    		font-size: 20px;
+    	}
+
+    	.btn-group {
+    		margin-top: 15px;
+    	}
+    	.select-chapter {
+    		width: 140px;
+			margin-left: 2px;
+			margin-right: 2px;
+    	}
+    	.btn-nav a{
+    		border: solid 1px #5cb85c;
+			border-radius: 2px;
+			background-color: #5cb85c;
+			color: white;
+			padding: 2px 8px;
+			width: 130px;	
+    	}
+    	.btn-nav a:hover{
+    		text-decoration: none;
+    	}
+    	/*Responsive*/
+    	@media only screen and (max-width: 600px) {
+		    .option {
+		       display: list-item!important;
+
+		    }
+		    .dropdown-menu {
+		    	width: 100%;
+		    }
+		    .btn-nav a span{
+	    		display: none;
+	    	}
+	    	.btn-nav a {
+	    		width: auto; 
+	    	}
+	    	.next {
+	    		display: inline !important;
+	    	}
+		    br {
+		    	display: none;
+		    }
+		}
+    </style>
+  </head>
+  <body>
+    <header>
+    	<nav class="navbar navbar-expand-lg navbar-light bg-light">
+		  <a class="navbar-brand" href="#"><img src="images/logo.png"> Ibook</a>
+		  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+		    <span class="navbar-toggler-icon"></span>
+		  </button>
+
+		  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+		    <ul class="navbar-nav mr-auto">
+		      <li class="nav-item dropdown">
+		        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+		        	<i class="fas fa-list"></i>
+		          Danh sách
+		        </a>
+		        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+		          <a class="dropdown-item" href="#">Code you'r life</a>
+		          <a class="dropdown-item" href="#">Tôi đi code dạo</a>
+		          <a class="dropdown-item" href="#">Clean code</a>
+		        </div>
+		      </li>
+
+		      <li class="nav-item dropdown">
+		        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+		        	<i class="fas fa-cog"></i>
+		          Tùy chỉnh
+		        </a>
+		        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+		          <form class="form-group">	
+		          	<div class="option">
+		          		<div class="col-md-5 col-xs-12" for="truyen-background">Màu nền</div>
+		          		<div class="col-md-7 col-xs-12">
+		          			<select class="form-control" id="truyen-background">
+			          			<option value="#F4F4F4">Xám nhạt</option>
+			          			<option value="#E9EBEE">Xanh nhạt</option>
+			          			<option value="#F4F4E4">Vàng nhạt</option>
+			          			<option value="#EAE4D3">Màu sepia</option>
+			          			<option value="#D5D8DC">Xanh đậm</option>
+			          			<option value="#FAFAC8">Vàng đậm</option>
+			          			<option value="#EFEFAB">Vàng ố</option>
+			          			<option value="#FFF">Màu trắng</option>
+			          			<option value="hatsan">Hạt sạn</option>
+			          			<option value="#232323">Màu tối</option>
+		          			</select>
+		          		</div>
+		          	</div>
+		          	<div class="option">
+		          		<div class="col-md-5" for="truyen-background">Phông chữ</div>
+		          		<div class="col-md-7">
+		          			<select class="form-control" id="font-chu">
+		          				<option value="'Palatino Linotype', serif">Palatino Linotype</option>
+		          				<option value="Bookerly, serif">Bookerly</option>
+		          				<option value="Minion, serif">Minion</option>
+		          				<option value="'Segoe UI', sans-serif">Segoe UI</option>
+		          				<option value="Roboto, sans-serif">Roboto</option>
+		          				<option value="'Roboto Condensed', sans-serif">Roboto Condensed</option>
+		          				<option value="'Patrick Hand', sans-serif">Patrick Hand</option>
+		          				<option value="'Noticia Text', sans-serif">Noticia Text</option>
+		          				<option value="'Times New Roman', serif">Times New Roman</option>
+		          				<option value="Verdana, sans-serif">Verdana</option>
+		          				<option value="Tahoma, sans-serif">Tahoma</option>
+		          				<option value="Arial, sans-serif">Arial</option>
+		          			</select>
+		          		</div>
+		          	</div>
+		          	</br>
+		          	<div class="option">
+		          		<div class="col-md-5" for="truyen-background">Size chữ</div>
+		          		<div class="col-md-7">
+		          			<select class="form-control" id="size-chu">
+		          				<option value="16px">16</option>
+		          				<option value="18px">18</option>
+		          				<option value="20px">20</option>
+		          				<option value="22px">22</option>
+		          				<option value="24px">24</option>
+		          				<option value="26px">26</option>
+		          				<option value="28px">28</option>
+		          				<option value="30px">30</option>
+		          				<option value="32px">32</option>
+		          				<option value="34px">34</option>
+		          				<option value="36px">36</option>
+		          				<option value="38px">38</option>
+		          				<option value="40px">40</option>
+		          			</select>
+		          		</div>
+		          	</div>
+		          	</br>
+		          	<div class="option">
+		          		<div class="col-md-5" for="truyen-background">Chiều cao dòng</div>
+		          		<div class="col-md-7">
+		          			<select class="form-control" id="truyen-background">
+			          			<option value="#F4F4F4">Xám nhạt</option>
+			          			<option value="#E9EBEE">Xanh nhạt</option>
+			          			<option value="#F4F4E4">Vàng nhạt</option>
+			          			<option value="#EAE4D3">Màu sepia</option>
+			          			<option value="#D5D8DC">Xanh đậm</option>
+			          			<option value="#FAFAC8">Vàng đậm</option>
+			          			<option value="#EFEFAB">Vàng ố</option>
+			          			<option value="#FFF">Màu trắng</option>
+			          			<option value="hatsan">Hạt sạn</option>
+			          			<option value="#232323">Màu tối</option>
+		          			</select>
+		          		</div>
+		          	</div>
+		          	</br>		          	
+		          </form>	
+		        </div>
+		      </li>
+
+		    </ul>
+		    <form class="form-inline my-2 my-lg-0">
+		      <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+		      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+		    </form>
+		  </div>
+		</nav>
+    </header>
+    <content>
+    	<div class="container">
+    		<!-- Book-title -->
+    		<div class="title">
+    			<div class="book-name">
+    				<center>Code your life</center>
+    			</div>
+    			<div class="book-chapter">
+    				<center>Chapter 1: Introduce</center>
+    			</div>
+    			<center>
+	    			<div class="btn-group btn-nav">
+	    				<a href="">
+	    					<i class="fas fa-angle-left"></i>
+	    					<span>Chương trước</span>
+	    					<span class="next" style="display: none">Trước</span>
+	    				</a>
+	    				<select class="form-control select-chapter">
+			          			<option value="chapter1">Chương 1</option>
+			          			<option value="chapter2">Chương 2</option>
+			          			<option value="chapter3">Chương 3</option>
+			          			<option value="chapter4">Chương 4</option>
+			          			<option value="chapter5">Chương 5</option>
+			          			<option value="chapter6">Chương 6</option>
+			          			<option value="chapter7">Chương 7</option>
+			          			<option value="chapter8">Chương 8</option>
+			          			<option value="chapter9">Chương 9</option>
+		          		</select>
+	    				<a href="">
+	    					<span>Chương sau</span>
+	    					<span class="next" style="display: none">Sau</span>
+	    					<i class="fas fa-angle-right"></i>
+	    					
+	    				</a>
+	    			</div>
+    			</center>
+    		</div>
+    		<!-- Book content -->
+    		<div class="content">
+    			
+    		</div>
+    	</div>
+    </content>
+    <!--jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+   
+  </body>
+</html>
