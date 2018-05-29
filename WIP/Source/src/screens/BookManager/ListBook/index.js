@@ -30,6 +30,7 @@ class ListBookScreen extends Component {
   constructor(props){
     super(props);
 
+    this.updateDimensions = this.updateDimensions.bind(this);
     this.onAddNewBook = this.onAddNewBook.bind(this);
     this.loadData = this.loadData.bind(this);
     this.onEditBook = this.onEditBook.bind(this);
@@ -41,10 +42,17 @@ class ListBookScreen extends Component {
   componentDidMount() {
     this.loadData();
 
+    window.addEventListener("resize", this.updateDimensions);
+    this.updateDimensions();
+
     var that=this;
     setInterval(function () {
       that.loadData();
     }, 30*1000);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("resize", this.updateDimensions);
   }
 
   loadData(){
@@ -52,6 +60,10 @@ class ListBookScreen extends Component {
     .then(list_books=>{
       this.setState({list_books});
     });
+  }
+
+  updateDimensions() {
+    this.setState({deviceWidth: window.innerWidth});
   }
 
   onAddNewBook(){
@@ -149,6 +161,8 @@ class ListBookScreen extends Component {
   }
 
   render() {
+    var is_desktop = this.state.deviceWidth >= 992;
+
     var styles={
       floatingActionButton: {
         position: 'fixed',
@@ -161,7 +175,8 @@ class ListBookScreen extends Component {
       },
       row: {
         marginLeft: 0,
-        marginRight: 0,
+        marginRight:0,
+
       },
       colLeft: {
         paddingLeft: 0,
@@ -199,7 +214,7 @@ class ListBookScreen extends Component {
     return (
       <div>
         <div className="row" style={styles.row}>
-          <div className="col-md-6" style={styles.colLeft}>
+          <div className="col-md-4" style={styles.colLeft}>
             <List>
               {
                 list_1.map(book=>(
@@ -208,7 +223,7 @@ class ListBookScreen extends Component {
               }
             </List>
           </div>
-          <div className="col-md-6" style={styles.colRight}>
+          <div className="col-md-4" style={styles.colRight}>
             <List>
               {
                 list_2.map(book=>(
