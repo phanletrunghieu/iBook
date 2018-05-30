@@ -106,7 +106,7 @@ class BookEditorScreen extends Component {
       titleField: {
         backgroundColor: 'white',
         marginBottom: 10,
-        'text-align': 'center'
+        textAlign: 'center'
       },
 
       floatingActionButton: {
@@ -122,7 +122,7 @@ class BookEditorScreen extends Component {
         <div style={{paddingLeft:20, paddingRight: 20, backgroundColor: 'white', marginTop:10,}}>
           <TextField
             style={styles.titleField}
-            value={this.state.chapter.name}
+            value={this.state.chapter.name || ""}
             floatingLabelText="Chapter's name"
             floatingLabelFixed={true}
             fullWidth

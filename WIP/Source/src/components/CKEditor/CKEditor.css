@@ -56,6 +56,14 @@
     /* Center the "page". */
     margin: 0 auto;
 }
+@media (max-width: 767.98px) {
+  .document-editor__editable-container .ck-editor__editable{
+    width: auto;
+  }
+  .document-editor__editable-container{
+    padding: 0;
+  }
+}
 
 /* Set the default font for the "page" of the content. */
 .document-editor .ck-content,

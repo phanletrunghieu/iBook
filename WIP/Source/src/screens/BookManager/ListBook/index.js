@@ -178,6 +178,9 @@ class ListBookScreen extends Component {
         backgroundColor: "#eee",
         padding: is_desktop ? "40px 100px" : 0,
       },
+      card: {
+        minHeight: is_desktop ? "calc(100vh - 144px)": "calc(100vh - 64px)",
+      },
       floatingActionButton: {
         position: 'fixed',
         bottom: 15,
@@ -226,7 +229,7 @@ class ListBookScreen extends Component {
 
     return (
       <div style={styles.container}>
-        <Card style={{minHeight: "calc(100vh - 144px)"}}>
+        <Card style={styles.card}>
           <div className="row" style={styles.row}>
             <div className="col-md-6" style={styles.colLeft}>
               <List>

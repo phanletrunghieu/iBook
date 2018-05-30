@@ -1,7 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
-import DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
 
 import './CKEditor.css';
 
@@ -28,7 +27,7 @@ class CKEditor extends React.Component {
   }
 
   onLoad() {
-    DecoupledEditor.create(
+    window.DecoupledEditor.create(
       document.querySelector( '.document-editor__editable' ),
       this.props.config
     )
@@ -61,16 +60,9 @@ class CKEditor extends React.Component {
 CKEditor.defaultProps = {
   content: "",
   config: {
-    // ckfinder: {
-    //   uploadUrl: '/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Files&responseType=json'
-    // },
-    cloudServices: {
-      tokenUrl:"https://33333.cke-cs.com/token/dev/ijrDsqFix838Gh3wGO3F77FSW94BwcLXprJ4APSp3XQ26xsUHTi0jcb1hoBt",
-      uploadUrl:"https://33333.cke-cs.com/easyimage/upload/"
-    }
+
   },
   isScriptLoaded: false,
-  scriptUrl: "https://cdn.ckeditor.com/ckeditor5/10.0.1/decoupled-document/ckeditor.js",
   activeClass: "ckeditor",
   onChange: (data)=>{}
 };
@@ -79,7 +71,6 @@ CKEditor.propTypes = {
   content: PropTypes.any,
   config: PropTypes.object,
   isScriptLoaded: PropTypes.bool,
-  scriptUrl: PropTypes.string,
   activeClass: PropTypes.string,
   onChange: PropTypes.func
 };

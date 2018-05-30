@@ -152,6 +152,9 @@ class ChapterListScreen extends Component {
         padding: is_desktop ? "40px 300px": "0",
         minHeight: "calc(100vh - 64px)",
       },
+      card: {
+        minHeight: is_desktop ? "auto": "calc(100vh - 64px)",
+      },
     };
 
     var pathname = this.props.location.pathname;
@@ -218,7 +221,7 @@ class ChapterListScreen extends Component {
           }
         />
         <div style={styles.listChapter}>
-          <Card>
+          <Card style={styles.card}>
             <List>
               <Subheader style={styles.subheader}>{this.state.book.name}</Subheader>
               {

@@ -93,7 +93,7 @@ export function addBook(name) {
 
     list_books.push({
       id: uuidv1(),
-      image: "https://about.canva.com/wp-content/uploads/sites/3/2015/01/children_bookcover.png",
+      image: "/images/cover.jpg",
       name: name,
       author: "",
       description: "",
