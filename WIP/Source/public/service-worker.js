@@ -5,8 +5,8 @@ var cacheName = 'weatherPWA-final-2';
 var filesToCache = [
   '/',
   '/index.html',
-  '/static/css/main.f743dd8f.css',
-  '/static/js/main.9fc01cf6.js',
+  '/static/css/main.25b9b51f.css',
+  '/static/js/main.7650c137.js',
   '/lib/bootstrap-4.0.0-dist/css/bootstrap.min.css',
   '/lib/bootstrap-4.0.0-dist/js/bootstrap.min.js',
   '/lib/fontawesome-free-5.0.8/css/fontawesome-all.min.css',
