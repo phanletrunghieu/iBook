@@ -13,7 +13,7 @@ const KEY_BOOK = 'list_books';
  * @property description {string} - mô tả
  * @property date_created {timestamp} - ngày tạo sách
  * @property date_modified {timestamp} - ngày chỉnh sách
- * @property status_id {int} - 1: mới tạo, 2: bị thay đổi nội dung, 3: xoá, 4: đã đồng bộ trên drive, 5: đổi tên, 6: đổi bìa sách
+ * @property status_id {int} - 1: mới tạo, 2: bị thay đổi nội dung, 3: xoá, 4: đã đồng bộ trên drive
  * @property chapters {array} - chứa các chapter {id, name, content}
  */
 

@@ -9,14 +9,16 @@ import Snackbar from 'material-ui/Snackbar';
 import SortIcon from 'material-ui/svg-icons/content/sort';
 
 import {getChapterByID, getBookByID} from "../../api/BookAPI";
+import GoogleDriveAPI from '../../api/GoogleDriveAPI';
 
 import browserHistory from "../../utils/browserHistory";
 
-import './BookViewer.css';
+import './UserBookViewer.css';
 
-class BookViewerScreen extends Component {
+class UserBookViewerScreen extends Component {
 
   state={
+    currentChapterIndex: -1,
     deviceWidth: 0,
     snackbarMessage: "",
     backgroundColor: "#F4F4F4",
@@ -52,11 +54,18 @@ class BookViewerScreen extends Component {
 
   loadData() {
     var bookId = this.props.match.params.bookId;
-    getBookByID(bookId)
+    GoogleDriveAPI.getFileContent(bookId)
     .then(book=>{
       if(!book){
         return Promise.reject("Book was not found");
       }
+
+      book = JSON.parse(book);
+
+      if(book.chapters.length > 0)
+        this.setState({currentChapterIndex: 0});
+
+      console.log(book);
 
       this.setState(book);
     })
@@ -68,7 +77,7 @@ class BookViewerScreen extends Component {
   }
 
   nextChapter(){
-    var index = this.state.chapters.findIndex(c=>c.id === this.props.match.params.chapterId);
+    var index = this.state.currentChapterIndex;
     if(index >= this.state.chapters.length - 1)
       return;
 
@@ -76,7 +85,7 @@ class BookViewerScreen extends Component {
   }
 
   prevChapter(){
-    var index = this.state.chapters.findIndex(c=>c.id === this.props.match.params.chapterId);
+    var index = this.state.currentChapterIndex;
     if(index <= 0)
       return;
 
@@ -92,11 +101,11 @@ class BookViewerScreen extends Component {
     if(!this.state.chapters)
       return null;
 
-    var chapterIndex = this.state.chapters.findIndex(c=>c.id === this.props.match.params.chapterId);
-    if(chapterIndex === -1)
+
+    if(this.state.currentChapterIndex === -1)
       return null;
 
-    var chapter = this.state.chapters[chapterIndex];
+    var chapter = this.state.chapters[this.state.currentChapterIndex];
 
     var styles={
       container: {
@@ -110,10 +119,10 @@ class BookViewerScreen extends Component {
         paddingBottom: 50,
       },
       prevButton: {
-        backgroundColor: chapterIndex === 0 ? "#d0d0d0" : "#5cb85c",
+        backgroundColor: this.state.currentChapterIndex === 0 ? "#d0d0d0" : "#5cb85c",
       },
       nextButton: {
-        backgroundColor: chapterIndex === this.state.chapters.length-1 ? "#d0d0d0" : "#5cb85c",
+        backgroundColor: this.state.currentChapterIndex === this.state.chapters.length-1 ? "#d0d0d0" : "#5cb85c",
       },
     }
 
@@ -222,12 +231,6 @@ class BookViewerScreen extends Component {
     		      </li>
     		    </ul>
     		  </div>
-
-          <ul className="navbar-nav flex-row ml-md-auto d-none d-md-flex">
-            <li className="nav-item">
-              <Link className="nav-link p-2" to={"/app/book/"+this.props.match.params.bookId+"/"+this.props.match.params.chapterId}>Write mode</Link>
-            </li>
-          </ul>
     		</nav>
         </header>
         <content>
@@ -294,4 +297,4 @@ class BookViewerScreen extends Component {
   }
 }
 
-export default BookViewerScreen;
+export default UserBookViewerScreen;

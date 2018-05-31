@@ -5,19 +5,30 @@ import FloatingActionButton from 'material-ui/FloatingActionButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import Snackbar from 'material-ui/Snackbar';
 import TextField from 'material-ui/TextField';
+import IconMenu from 'material-ui/IconMenu';
+import MenuItem from 'material-ui/MenuItem';
+import IconButton from 'material-ui/IconButton';
+import AppBar from 'material-ui/AppBar';
 
 import SaveIcon from 'material-ui/svg-icons/content/save';
+import ArrowBackIcon from 'material-ui/svg-icons/navigation/arrow-back';
+import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
+import VisibilityIcon from 'material-ui/svg-icons/action/visibility';
 
 import MyEditor from "../../../components/CKEditor";
 
-import {getChapterByID, editChapterContent} from "../../../api/BookAPI";
+import {getBookByID, getChapterByID, editChapterContent} from "../../../api/BookAPI";
 import {getTimeAutoSave, setTimeAutoSave, getTimeAutoSync, setTimeAutoSync} from "../../../api/SettingAPI";
+
+import browserHistory from "../../../utils/browserHistory";
 
 import "./BookEditor.css"
 
 class BookEditorScreen extends Component {
 
   state={
+    book: {},
+    chapter: {},
     deviceWidth: 0,
     chapter: {},
     snackbarMessage: "",
@@ -66,7 +77,12 @@ class BookEditorScreen extends Component {
     getChapterByID(bookId, chapterId)
     .then(chapter => {
       this.setState({chapter});
-    })
+    });
+
+    getBookByID(bookId)
+    .then(book => {
+      this.setState({book});
+    });
   }
 
   handleChangeBookContent(value){
@@ -119,16 +135,31 @@ class BookEditorScreen extends Component {
 
     return (
       <div style={styles.container} className="book-editor-screen">
-        <div style={{paddingLeft:20, paddingRight: 20, backgroundColor: 'white', marginTop:10,}}>
-          <TextField
-            style={styles.titleField}
-            value={this.state.chapter.name || ""}
-            floatingLabelText="Chapter's name"
-            floatingLabelFixed={true}
-            fullWidth
-            onChange={event=>this.handleChangeChapterName(event)}
-          />
-        </div>
+        <AppBar
+          title={this.state.book.name + " - " + this.state.chapter.name}
+          //onTitleClick={handleClick}
+          style={{position: 'fixed', top: 0}}
+          iconElementLeft={
+            <IconButton onClick={browserHistory.goBack}>
+              <ArrowBackIcon />
+            </IconButton>
+          }
+          iconElementRight={
+            <div>
+              <IconButton onClick={()=>browserHistory.push("/book/"+this.props.match.params.bookId+"/"+this.props.match.params.chapterId)}><VisibilityIcon color="white" /></IconButton>
+              <IconMenu
+                iconButtonElement={
+                  <IconButton><MoreVertIcon color="white" /></IconButton>
+                }
+                targetOrigin={{horizontal: 'right', vertical: 'top'}}
+                anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+              >
+                <MenuItem primaryText="Refresh" onClick={() => window.location.reload()} />
+                <MenuItem primaryText="Help" />
+              </IconMenu>
+            </div>
+          }
+        />
         <MyEditor
           content={this.state.chapter.content}
           onChange={value=>this.handleChangeBookContent(value)}

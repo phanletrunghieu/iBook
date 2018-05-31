@@ -214,8 +214,7 @@ class ChapterListScreen extends Component {
               anchorOrigin={{horizontal: 'right', vertical: 'top'}}
             >
               <MenuItem primaryText="Refresh" onClick={() => window.location.reload()} />
-              <MenuItem primaryText="Detail" onClick={() => browserHistory.push('/app/book/' + this.state.book.id + '/detail')} />
-              <MenuItem primaryText="View" onClick={() => browserHistory.push('/app/book/' + this.state.book.id + '/view')} />
+              <MenuItem primaryText="View" onClick={() => browserHistory.push('/book/' + this.state.book.id + '/' + this.state.book.chapters[0].id)} />
               <MenuItem primaryText="Help" />
             </IconMenu>
           }
@@ -236,6 +235,7 @@ class ChapterListScreen extends Component {
                         anchorOrigin={{horizontal: 'right', vertical: 'top'}}
                         targetOrigin={{horizontal: 'right', vertical: 'top'}}
                       >
+                        <MenuItem primaryText="View" onClick={() => browserHistory.push('/book/' + this.state.book.id + '/' + chapter.id)} />
                         <MenuItem primaryText="Rename" onClick={()=>this.setState({openDialogRenameChapter: true, renameChapterName: chapter.name, selectedChapter: chapter})} />
                         <MenuItem primaryText="Delete" onClick={()=>this.onShowConfirmDialog(chapter)} />
                       </IconMenu>

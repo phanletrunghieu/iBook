@@ -14,10 +14,12 @@ import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 
 import AddIcon from 'material-ui/svg-icons/content/add';
 
+import ConfirmBox from "../../../components/ConfirmBox";
+
 import browserHistory from "../../../utils/browserHistory";
 
 import {addBook, getBooksData, deleteBook} from "../../../api/BookAPI";
-import {formatDate} from "../../../utils/helper"
+import {formatDate, getHomeUrl, copyTextToClipboard} from "../../../utils/helper"
 
 import BookDetailDialog from '../BookDetail';
 
@@ -36,6 +38,7 @@ class ListBookScreen extends Component {
     this.updateDimensions = this.updateDimensions.bind(this);
     this.onAddNewBook = this.onAddNewBook.bind(this);
     this.loadData = this.loadData.bind(this);
+    this.onShareBook = this.onShareBook.bind(this);
     this.onEditBook = this.onEditBook.bind(this);
     this.onViewBook = this.onViewBook.bind(this);
     this.onEditInfoBook = this.onEditInfoBook.bind(this);
@@ -90,6 +93,16 @@ class ListBookScreen extends Component {
     browserHistory.push('/app/book/'+book.id);
   }
 
+  onShareBook(book){
+    if (book.status_id!==4) {
+      //nếu chưa đồng bộ
+      return this.setState({snackbarMessage: "This book is not sync to server."});
+    }
+
+    copyTextToClipboard(getHomeUrl()+"/view/book/"+book.id);
+    this.setState({snackbarMessage: "Link is copied."});
+  }
+
   onViewBook(book){
     browserHistory.push('/book/'+book.id+'/'+book.chapters[0].id);
   }
@@ -99,7 +112,16 @@ class ListBookScreen extends Component {
     this.bookDetailDialog.show(book);
   }
 
-  onDeleteBook(book){
+  onShowConfirmDialog(book){
+    this.confirmBoxDelete.setState({
+      show: true,
+      data: book,
+      title: "Confirm",
+      body: "Delete chapter \"" + book.name + "\"?",
+    });
+  }
+  onDeleteBook(){
+    var book = this.confirmBoxDelete.state.data;
     deleteBook(book.id)
     .then(()=>{
       this.setState({snackbarMessage: "\"" + book.name + "\" has been removed."});
@@ -144,7 +166,7 @@ class ListBookScreen extends Component {
             <div style={{paddingBottom:5}}>{"Date created: " + formatDate((new Date(book.date_created)).toString())}</div>
             <div style={{paddingBottom:5}}>{"Last updated: " + formatDate((new Date(book.date_modified)).toString())}</div>
             <div style={{paddingBottom:5}}>{"Author: " + book.author}</div>
-            <div style={{paddingBottom:5}}>{"Chapter: " + book.chapter}</div>
+            <div style={{paddingBottom:5}}>{"Chapter: " + book.chapters.length}</div>
             <div style={{paddingBottom:5}}>{"Description: " + book.description}</div>
           </div>
         }
@@ -161,8 +183,9 @@ class ListBookScreen extends Component {
             targetOrigin={{horizontal: 'right', vertical: 'top'}}
           >
             <MenuItem primaryText="View" onClick={()=>this.onViewBook(book)} />
+            <MenuItem primaryText="Share" onClick={()=>this.onShareBook(book)} />
             <MenuItem primaryText="Edit info" onClick={()=>this.onEditInfoBook(book)} />
-            <MenuItem primaryText="Delete" onClick={()=>this.onDeleteBook(book)} />
+            <MenuItem primaryText="Delete" onClick={()=>this.onShowConfirmDialog(book)} />
           </IconMenu>
         }
         onClick={()=>this.onEditBook(book)}
@@ -176,7 +199,7 @@ class ListBookScreen extends Component {
     var styles={
       container: {
         backgroundColor: "#eee",
-        padding: is_desktop ? "40px 100px" : 0,
+        padding: is_desktop ? "40px 190px" : 0,
       },
       card: {
         minHeight: is_desktop ? "calc(100vh - 144px)": "calc(100vh - 64px)",
@@ -276,6 +299,8 @@ class ListBookScreen extends Component {
             onKeyPress={e=>{if(e.key === 'Enter'){this.onAddNewBook()}}}
           />
         </Dialog>
+
+        <ConfirmBox ref={confirmBoxDelete=>this.confirmBoxDelete=confirmBoxDelete} onClickOk={this.onDeleteBook} />
 
         <BookDetailDialog
           ref={r=>this.bookDetailDialog=r}

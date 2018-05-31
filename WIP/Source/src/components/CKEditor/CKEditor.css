@@ -26,6 +26,8 @@
 .document-editor__toolbar .ck-toolbar {
     border: 0;
     border-radius: 0;
+    display: block;
+    text-align: center;
 }
 
 /* Make the editable container look like the inside of a native word processor application. */
@@ -62,6 +64,9 @@
   }
   .document-editor__editable-container{
     padding: 0;
+  }
+  .document-editor__toolbar .ck-toolbar{
+    display: flex;
   }
 }
 

@@ -146,6 +146,29 @@ class GoogleDriveAPI {
       .catch(err=>reject(err.message || err));
     });
   }
+
+  getFileContent(fileId){
+    var url="https://www.googleapis.com/drive/v3/files/" + fileId + "/export?"
+          +"mimeType="+encodeURI("text/plain")
+          +"&key="+encodeURI(this.API_KEY);
+
+    return new Promise(function(resolve, reject) {
+      fetch(url, {
+        cache: 'no-cache',
+        method: 'GET',
+      })
+      .then(response => {
+        if(response.ok)
+          return response.text();
+        else
+          return Promise.reject("Fail");
+      })
+      .then(response => {
+        resolve(response);
+      })
+      .catch(err=>reject(err));
+    });
+  }
 }
 
 export default new GoogleDriveAPI();
