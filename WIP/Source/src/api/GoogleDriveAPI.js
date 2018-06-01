@@ -160,11 +160,60 @@ class GoogleDriveAPI {
       .then(response => {
         if(response.ok)
           return response.text();
+
+
         else
           return Promise.reject("Fail");
       })
       .then(response => {
         resolve(response);
+      })
+      .catch(err=>reject(err));
+    });
+  }
+
+  enableShare(fileId){
+    var url="https://www.googleapis.com/drive/v3/files/" + fileId + "/permissions";
+
+    return new Promise(function(resolve, reject) {
+      var token=window.gapi.auth.getToken();
+      fetch(url, {
+        cache: 'no-cache',
+        method: 'POST',
+        headers: {
+          'Authorization': token.token_type + " " + token.access_token,
+          'content-type': 'application/json',
+        },
+        body: JSON.stringify({
+          'role' : "reader",
+          'type' : "anyone",
+        }),
+      })
+      .then(response => response.json())
+      .then(response => resolve(response))
+      .catch(err=>reject(err));
+    });
+  }
+
+  disableShare(fileId){
+    var url="https://www.googleapis.com/drive/v3/files/" + fileId + "/permissions/anyoneWithLink";
+
+    return new Promise(function(resolve, reject) {
+      var token=window.gapi.auth.getToken();
+      fetch(url, {
+        cache: 'no-cache',
+        method: 'DELETE',
+        headers: {
+          'Authorization': token.token_type + " " + token.access_token,
+          'content-type': 'application/json',
+        },
+      })
+      .then(response => {
+        if (response.status === 204) {
+          return resolve(true);
+        }
+
+        reject("Fail");
       })
       .catch(err=>reject(err));
     });

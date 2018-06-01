@@ -18,6 +18,7 @@ import './UserBookViewer.css';
 class UserBookViewerScreen extends Component {
 
   state={
+    chapters: [],
     currentChapterIndex: -1,
     deviceWidth: 0,
     snackbarMessage: "",
@@ -62,12 +63,10 @@ class UserBookViewerScreen extends Component {
 
       book = JSON.parse(book);
 
+      this.setState(book);
+
       if(book.chapters.length > 0)
         this.setState({currentChapterIndex: 0});
-
-      console.log(book);
-
-      this.setState(book);
     })
     .catch(err=>this.setState({snackbarMessage: err.message || err}));
   }
@@ -98,14 +97,8 @@ class UserBookViewerScreen extends Component {
     var buttonNext = is_desktop ? "Chương sau" : "Sau";
     var buttonPrev = is_desktop ? "Chương trước" : "Trước";
 
-    if(!this.state.chapters)
-      return null;
-
-
-    if(this.state.currentChapterIndex === -1)
-      return null;
-
-    var chapter = this.state.chapters[this.state.currentChapterIndex];
+    var chapter = this.state.currentChapterIndex!==-1 ? this.state.chapters[this.state.currentChapterIndex] : null;
+    console.log(this.state.currentChapterIndex);
 
     var styles={
       container: {
@@ -130,24 +123,13 @@ class UserBookViewerScreen extends Component {
       <div className="book-viewer-screen" style={styles.container}>
         <header>
         	<nav className="navbar navbar-expand-lg navbar-light bg-light">
-    		  <Link className="navbar-brand" to="/app"><img src="/images/logo.png"/>Ibook</Link>
+    		  <Link className="navbar-brand" to="/"><img src="/images/logo.png"/>Ibook</Link>
     		  <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     		    <span className="navbar-toggler-icon"></span>
     		  </button>
 
     		  <div className="collapse navbar-collapse" id="navbarSupportedContent">
     		    <ul className="navbar-nav mr-auto">
-    		      <li className="nav-item dropdown">
-    		        <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    		        	<i className="fas fa-list"></i>
-    		          Danh sách
-    		        </a>
-    		        <div className="dropdown-menu" aria-labelledby="navbarDropdown">
-    		          <a className="dropdown-item" href="#">Tôi đi code dạo</a>
-    		          <a className="dropdown-item" href="#">Clean code</a>
-    		        </div>
-    		      </li>
-
     		      <li className="nav-item dropdown">
     		        <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
     		        	<i className="fas fa-cog"></i>
@@ -233,56 +215,61 @@ class UserBookViewerScreen extends Component {
     		  </div>
     		</nav>
         </header>
-        <content>
-        	<div className="container">
-        		<div className="title">
-        			<div className="book-name">
-        				<center>{this.state.name}</center>
-        			</div>
-        			<div className="book-chapter">
-        				<center>{chapter.name}</center>
-        			</div>
-        		</div>
-            <center>
-              <div className="btn-group btn-nav">
-                <a onClick={this.prevChapter} style={styles.prevButton}>
-                  <i className="fas fa-angle-left"></i>
-                  <span className="next">{buttonPrev}</span>
-                </a>
-                <select className="form-control select-chapter" value={chapter.id} onChange={e=>this.onChangeChapter(e.target.value)}>
-                  {
-                    this.state.chapters.map((chapter, index)=>(
-                      <option key={index} value={chapter.id}>Chương {index+1}</option>
-                    ))
-                  }
-                </select>
-                <a onClick={this.nextChapter} style={styles.nextButton}>
-                  <span className="next">{buttonNext}</span>
-                  <i className="fas fa-angle-right"></i>
-                </a>
+        <content style={{minHeight: "calc(100vh - 58px)", display: 'block'}}>
+          {
+            chapter ?
+            <div className="container">
+              <div className="title">
+                <div className="book-name">
+                  <center>{this.state.name}</center>
+                </div>
+                <div className="book-chapter">
+                  <center>{chapter.name}</center>
+                </div>
               </div>
-            </center>
-            <div className="ck-content" style={styles.ckContent} dangerouslySetInnerHTML={{__html: chapter.content}}/>
-            <center>
-              <div className="btn-group btn-nav">
-                <a onClick={this.prevChapter} style={styles.prevButton}>
-                  <i className="fas fa-angle-left"></i>
-                  <span className="next">{buttonPrev}</span>
-                </a>
-                <select className="form-control select-chapter" value={chapter.id} onChange={e=>this.onChangeChapter(e.target.value)}>
-                  {
-                    this.state.chapters.map((chapter, index)=>(
-                      <option key={index} value={chapter.id}>Chương {index+1}</option>
-                    ))
-                  }
-                </select>
-                <a onClick={this.nextChapter} style={styles.nextButton}>
-                  <span className="next">{buttonNext}</span>
-                  <i className="fas fa-angle-right"></i>
-                </a>
-              </div>
-            </center>
-        	</div>
+              <center>
+                <div className="btn-group btn-nav">
+                  <a onClick={this.prevChapter} style={styles.prevButton}>
+                    <i className="fas fa-angle-left"></i>
+                    <span className="next">{buttonPrev}</span>
+                  </a>
+                  <select className="form-control select-chapter" value={chapter.id} onChange={e=>this.onChangeChapter(e.target.value)}>
+                    {
+                      this.state.chapters.map((chapter, index)=>(
+                        <option key={index} value={chapter.id}>Chương {index+1}</option>
+                      ))
+                    }
+                  </select>
+                  <a onClick={this.nextChapter} style={styles.nextButton}>
+                    <span className="next">{buttonNext}</span>
+                    <i className="fas fa-angle-right"></i>
+                  </a>
+                </div>
+              </center>
+              <div className="ck-content" style={styles.ckContent} dangerouslySetInnerHTML={{__html: chapter.content}}/>
+              <center>
+                <div className="btn-group btn-nav">
+                  <a onClick={this.prevChapter} style={styles.prevButton}>
+                    <i className="fas fa-angle-left"></i>
+                    <span className="next">{buttonPrev}</span>
+                  </a>
+                  <select className="form-control select-chapter" value={chapter.id} onChange={e=>this.onChangeChapter(e.target.value)}>
+                    {
+                      this.state.chapters.map((chapter, index)=>(
+                        <option key={index} value={chapter.id}>Chương {index+1}</option>
+                      ))
+                    }
+                  </select>
+                  <a onClick={this.nextChapter} style={styles.nextButton}>
+                    <span className="next">{buttonNext}</span>
+                    <i className="fas fa-angle-right"></i>
+                  </a>
+                </div>
+              </center>
+          	</div>
+            :
+            <div className="text-center" style={{fontSize: 30, paddingTop: 50}}>This content is not available.</div>
+          }
         </content>
 
         <Snackbar

@@ -18,7 +18,8 @@ import ConfirmBox from "../../../components/ConfirmBox";
 
 import browserHistory from "../../../utils/browserHistory";
 
-import {addBook, getBooksData, deleteBook} from "../../../api/BookAPI";
+import {addBook, getBooksData, deleteBook, shareBook} from "../../../api/BookAPI";
+import GoogleDriveAPI from '../../../api/GoogleDriveAPI';
 import {formatDate, getHomeUrl, copyTextToClipboard} from "../../../utils/helper"
 
 import BookDetailDialog from '../BookDetail';
@@ -39,6 +40,7 @@ class ListBookScreen extends Component {
     this.onAddNewBook = this.onAddNewBook.bind(this);
     this.loadData = this.loadData.bind(this);
     this.onShareBook = this.onShareBook.bind(this);
+    this.onUnShareBook = this.onUnShareBook.bind(this);
     this.onEditBook = this.onEditBook.bind(this);
     this.onViewBook = this.onViewBook.bind(this);
     this.onEditInfoBook = this.onEditInfoBook.bind(this);
@@ -99,8 +101,43 @@ class ListBookScreen extends Component {
       return this.setState({snackbarMessage: "This book is not sync to server."});
     }
 
-    copyTextToClipboard(getHomeUrl()+"/view/book/"+book.id);
-    this.setState({snackbarMessage: "Link is copied."});
+    GoogleDriveAPI.enableShare(book.id)
+    .then(()=>{
+      //đánh dâu ở local là đã share
+      return shareBook(book.id, true);
+    })
+    .then(bookdata=>{
+      this.loadData();
+
+      var url = getHomeUrl()+"/view/book/"+book.id;
+      copyTextToClipboard(url);
+      this.setState({snackbarMessage: "Link is copied."});
+
+      window.open(url, '_blank');
+    })
+    .catch(err=>{
+      this.setState({snackbarMessage: "Fail."});
+    });
+  }
+
+  onUnShareBook(book){
+    if (book.status_id!==4) {
+      //nếu chưa đồng bộ
+      return this.setState({snackbarMessage: "This book is not sync to server."});
+    }
+
+    GoogleDriveAPI.disableShare(book.id)
+    .then(()=>{
+      //đánh dâu ở local là đã share
+      return shareBook(book.id, false);
+    })
+    .then(bookdata=>{
+      this.loadData();
+      this.setState({snackbarMessage: "Disable share."});
+    })
+    .catch(err=>{
+      this.setState({snackbarMessage: "Fail."});
+    });
   }
 
   onViewBook(book){
@@ -183,7 +220,7 @@ class ListBookScreen extends Component {
             targetOrigin={{horizontal: 'right', vertical: 'top'}}
           >
             <MenuItem primaryText="View" onClick={()=>this.onViewBook(book)} />
-            <MenuItem primaryText="Share" onClick={()=>this.onShareBook(book)} />
+            <MenuItem primaryText={book.is_share ? "Unshare" : "Share"} onClick={book.is_share ? ()=>this.onUnShareBook(book) : ()=>this.onShareBook(book)} />
             <MenuItem primaryText="Edit info" onClick={()=>this.onEditInfoBook(book)} />
             <MenuItem primaryText="Delete" onClick={()=>this.onShowConfirmDialog(book)} />
           </IconMenu>

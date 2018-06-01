@@ -15,6 +15,7 @@ const KEY_BOOK = 'list_books';
  * @property date_modified {timestamp} - ngày chỉnh sách
  * @property status_id {int} - 1: mới tạo, 2: bị thay đổi nội dung, 3: xoá, 4: đã đồng bộ trên drive
  * @property chapters {array} - chứa các chapter {id, name, content}
+ * @property is_share {bool} - đã share chưa
  */
 
 
@@ -72,11 +73,13 @@ export function getChapterByID(book_id, chapter_id) {
 /**
  * Lưu dữ liệu
  */
-export function setBooksData(list_books) {
+export function setBooksData(list_books, is_sync=true) {
   return new Promise(function(resolve, reject) {
     localforage.setItem(KEY_BOOK, JSON.stringify(list_books))
     .then(()=>{
-      sync();
+      if(is_sync){
+        sync();
+      }
       resolve();
     })
     .catch(err=>reject(err));
@@ -220,5 +223,15 @@ export function updateBook(book_id, new_data) {
       list_books[index].status_id = 2;
 
     return setBooksData(list_books);
+  });
+}
+
+export function shareBook(book_id, is_share) {
+  return getBooksData()
+  .then(list_books=>{
+    var index=list_books.findIndex(book=>book.id.toString() === book_id.toString());
+    list_books[index].is_share = is_share;
+
+    return setBooksData(list_books, false);
   });
 }

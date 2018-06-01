@@ -6,7 +6,7 @@ var filesToCache = [
   '/',
   '/index.html',
   '/static/css/main.25b9b51f.css',
-  '/static/js/main.7650c137.js',
+  '/static/js/main.5399acb8.js',
   '/lib/bootstrap-4.0.0-dist/css/bootstrap.min.css',
   '/lib/bootstrap-4.0.0-dist/js/bootstrap.min.js',
   '/lib/fontawesome-free-5.0.8/css/fontawesome-all.min.css',
@@ -202,6 +202,7 @@ self.addEventListener('message', function(event){
  * @property date_modified {timestamp} - ngày chỉnh sách
  * @property status_id {int} - 1: mới tạo, 2: bị thay đổi nội dung, 3: xoá, 4: đã đồng bộ trên drive
  * @property chapters {array} - chứa các chapter {id, name, content}
+ * @property is_share {bool} - đã share chưa
  */
 
 /**
@@ -243,13 +244,18 @@ function downloadFile(id) {
 
       console.log("download file", content);
 
-      var index=list_books.findIndex(book=>book.id===id);
-      if(index === -1){
+      fileIndex=list_books.findIndex(book=>book.id===id);
+      if(fileIndex === -1){
         list_books.push(content);
+        fileIndex = list_books.length - 1;
       } else {
-        list_books[index] = content;
+        list_books[fileIndex] = content;
       }
 
+      return isShare(id);
+    })
+    .then(is_share=>{
+      list_books[fileIndex].is_share = is_share;
       return setLocalFile(list_books);
     })
     .then(()=>resolve())
@@ -452,5 +458,26 @@ function deleteRemoteFile(fileId) {
       return resolve(response);
     })
     .catch(err=>reject(err.message || err));
+  });
+}
+
+/**
+ * Kiểm tra file đã bật share chưa
+ */
+function isShare(fileId) {
+  return new Promise(function(resolve, reject) {
+    var url="https://www.googleapis.com/drive/v3/files/" + fileId + "/permissions/anyoneWithLink";
+    fetch(url, {
+      cache: 'no-cache',
+      method: 'GET',
+      headers: {
+        'Authorization': self.token.token_type + " " + self.token.access_token,
+        'content-type': 'application/json',
+      },
+    })
+    .then(response => {
+      resolve(response.status===200);
+    })
+    .catch(err=>resolve(false));
   });
 }
