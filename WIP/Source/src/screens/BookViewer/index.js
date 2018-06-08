@@ -9,6 +9,7 @@ import Snackbar from 'material-ui/Snackbar';
 import SortIcon from 'material-ui/svg-icons/content/sort';
 
 import {getChapterByID, getBookByID} from "../../api/BookAPI";
+import {HotKeys} from 'react-hotkeys';
 
 import browserHistory from "../../utils/browserHistory";
 
@@ -84,6 +85,15 @@ class BookViewerScreen extends Component {
   }
 
   render() {
+    const keyMap = {
+        'previousChapter': 'ctrl+left',
+        'nextChapter': 'ctrl+right'
+        };
+    const handlers = {
+          'previousChapter': this.prevChapter,
+          'nextChapter': this.nextChapter,
+        };
+
     var is_desktop = this.state.deviceWidth >= 992;
 
     var buttonNext = is_desktop ? "Chương sau" : "Sau";
@@ -118,6 +128,7 @@ class BookViewerScreen extends Component {
     }
 
     return (
+      <HotKeys keyMap={keyMap} handlers={handlers}>
       <div className="book-viewer-screen" style={styles.container}>
         <header>
         	<nav className="navbar navbar-expand-lg navbar-light bg-light">
@@ -290,6 +301,7 @@ class BookViewerScreen extends Component {
           bodyStyle={{textAlign: "center"}}
         />
       </div>
+      </HotKeys>
     );
   }
 }
