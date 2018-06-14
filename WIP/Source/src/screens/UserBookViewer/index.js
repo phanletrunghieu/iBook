@@ -247,7 +247,7 @@ class UserBookViewerScreen extends Component {
                 </div>
               </center>
               <div className="ck-content" style={styles.ckContent} dangerouslySetInnerHTML={{__html: chapter.content}}/>
-              <center>
+              <center style={{paddingBottom: 50}}>
                 <div className="btn-group btn-nav">
                   <a onClick={this.prevChapter} style={styles.prevButton}>
                     <i className="fas fa-angle-left"></i>

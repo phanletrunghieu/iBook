@@ -22,6 +22,8 @@ import {addBook, getBooksData, deleteBook, shareBook} from "../../../api/BookAPI
 import GoogleDriveAPI from '../../../api/GoogleDriveAPI';
 import {formatDate, getHomeUrl, copyTextToClipboard} from "../../../utils/helper"
 
+import LinkDialog from './LinkDialog';
+
 import BookDetailDialog from '../BookDetail';
 
 class ListBookScreen extends Component {
@@ -43,6 +45,7 @@ class ListBookScreen extends Component {
     this.onUnShareBook = this.onUnShareBook.bind(this);
     this.onEditBook = this.onEditBook.bind(this);
     this.onViewBook = this.onViewBook.bind(this);
+    this.onCopyLink = this.onCopyLink.bind(this);
     this.onEditInfoBook = this.onEditInfoBook.bind(this);
     this.onDeleteBook = this.onDeleteBook.bind(this);
   }
@@ -93,6 +96,12 @@ class ListBookScreen extends Component {
 
   onEditBook(book){
     browserHistory.push('/app/book/'+book.id);
+  }
+
+  onCopyLink(book){
+    var url = getHomeUrl()+"/view/book/"+book.id;
+    copyTextToClipboard(url);
+    this.LinkDialog.show(url);
   }
 
   onShareBook(book){
@@ -221,6 +230,11 @@ class ListBookScreen extends Component {
           >
             <MenuItem primaryText="View" onClick={()=>this.onViewBook(book)} />
             <MenuItem primaryText={book.is_share ? "Unshare" : "Share"} onClick={book.is_share ? ()=>this.onUnShareBook(book) : ()=>this.onShareBook(book)} />
+            {
+              book.is_share ?
+              <MenuItem primaryText="Copy link" onClick={()=>this.onCopyLink(book)} />
+              : null
+            }
             <MenuItem primaryText="Edit info" onClick={()=>this.onEditInfoBook(book)} />
             <MenuItem primaryText="Delete" onClick={()=>this.onShowConfirmDialog(book)} />
           </IconMenu>
@@ -338,6 +352,8 @@ class ListBookScreen extends Component {
         </Dialog>
 
         <ConfirmBox ref={confirmBoxDelete=>this.confirmBoxDelete=confirmBoxDelete} onClickOk={this.onDeleteBook} />
+
+        <LinkDialog ref={r=>this.LinkDialog = r}/>
 
         <BookDetailDialog
           ref={r=>this.bookDetailDialog=r}
