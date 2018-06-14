@@ -8,7 +8,7 @@ import Snackbar from 'material-ui/Snackbar';
 
 import SortIcon from 'material-ui/svg-icons/content/sort';
 
-import {getChapterByID, getBookByID} from "../../api/BookAPI";
+import {getChapterByID, getBookByID, getBooksData} from "../../api/BookAPI";
 import {HotKeys} from 'react-hotkeys';
 
 import browserHistory from "../../utils/browserHistory";
@@ -24,6 +24,7 @@ class BookViewerScreen extends Component {
     fontFamily: "'Palatino Linotype', serif",
     fontSize: 24,
     lineHeight: 1.6,
+    list_books: [],
   };
 
   constructor(props){
@@ -60,6 +61,13 @@ class BookViewerScreen extends Component {
       }
 
       this.setState(book);
+    })
+    .catch(err=>this.setState({snackbarMessage: err.message || err}));
+
+    getBooksData()
+    .then(list_books=>{
+      list_books = list_books.filter(book=>book.id!==bookId);
+      this.setState({list_books});
     })
     .catch(err=>this.setState({snackbarMessage: err.message || err}));
   }
@@ -139,16 +147,24 @@ class BookViewerScreen extends Component {
 
     		  <div className="collapse navbar-collapse" id="navbarSupportedContent">
     		    <ul className="navbar-nav mr-auto">
-    		      <li className="nav-item dropdown">
-    		        <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    		        	<i className="fas fa-list"></i>
-    		          Danh sách
-    		        </a>
-    		        <div className="dropdown-menu" aria-labelledby="navbarDropdown">
-    		          <a className="dropdown-item" href="#">Tôi đi code dạo</a>
-    		          <a className="dropdown-item" href="#">Clean code</a>
-    		        </div>
-    		      </li>
+              {
+                this.state.list_books.length > 0 ?
+                <li className="nav-item dropdown">
+                  <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      		        	<i className="fas fa-list"></i>
+      		          Danh sách
+      		        </a>
+
+                  <div className="dropdown-menu" aria-labelledby="navbarDropdown">
+                    {
+                      this.state.list_books.map(book=>(
+                        <a className="dropdown-item" href="#">{book.name}</a>
+                      ))
+                    }
+                  </div>
+                </li>
+                :null
+              }
 
     		      <li className="nav-item dropdown">
     		        <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

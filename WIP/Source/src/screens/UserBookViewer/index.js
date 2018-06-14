@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import {HotKeys} from 'react-hotkeys';
 import {Link} from 'react-router-dom';
 import {List, ListItem} from 'material-ui/List';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
@@ -92,6 +93,15 @@ class UserBookViewerScreen extends Component {
   }
 
   render() {
+    const keyMap = {
+        'previousChapter': 'ctrl+left',
+        'nextChapter': 'ctrl+right'
+        };
+    const handlers = {
+          'previousChapter': this.prevChapter,
+          'nextChapter': this.nextChapter,
+        };
+
     var is_desktop = this.state.deviceWidth >= 992;
 
     var buttonNext = is_desktop ? "Chương sau" : "Sau";
@@ -120,6 +130,7 @@ class UserBookViewerScreen extends Component {
     }
 
     return (
+      <HotKeys keyMap={keyMap} handlers={handlers}>
       <div className="book-viewer-screen" style={styles.container}>
         <header>
         	<nav className="navbar navbar-expand-lg navbar-light bg-light">
@@ -280,6 +291,7 @@ class UserBookViewerScreen extends Component {
           bodyStyle={{textAlign: "center"}}
         />
       </div>
+      </HotKeys>
     );
   }
 }

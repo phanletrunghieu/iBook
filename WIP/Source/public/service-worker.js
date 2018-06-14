@@ -1,12 +1,12 @@
 importScripts("/lib/localForage/localforage.min.js");
 
-var dataCacheName = 'weatherData-v2';
-var cacheName = 'weatherPWA-final-2';
+var dataCacheName = 'iBookData-v2';
+var cacheName = 'iBookPWA-final-2';
 var filesToCache = [
   '/',
   '/index.html',
   '/static/css/main.25b9b51f.css',
-  '/static/js/main.7f2e210d.js',
+  '/static/js/main.313f1cf6.js',
   '/lib/bootstrap-4.0.0-dist/css/bootstrap.min.css',
   '/lib/bootstrap-4.0.0-dist/js/bootstrap.min.js',
   '/lib/fontawesome-free-5.0.8/css/fontawesome-all.min.css',
