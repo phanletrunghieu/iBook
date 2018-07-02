@@ -35,6 +35,12 @@ export function setAvatar(avatar) {
   localStorage.setItem(KEY_USER_AVATAR, avatar);
 }
 
+export function isSignIn(){
+  var uid = localStorage.getItem(KEY_UID);
+  var email = localStorage.getItem(KEY_USER_EMAIL);
+  return !!uid && !!email;
+}
+
 export function setUserInfo(id, email, name, avatar) {
   setUID(id);
   setEmail(email);

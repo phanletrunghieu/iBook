@@ -4,6 +4,8 @@
   .book-viewer-screen .navbar-brand {
     margin-left: 10%;
     color: white !important; }
+  .book-viewer-screen .navbar-collapse {
+    display: flex; }
   .book-viewer-screen .nav-link {
     color: white !important; }
   .book-viewer-screen .nav-link:hover {

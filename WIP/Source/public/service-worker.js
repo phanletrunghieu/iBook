@@ -5,8 +5,8 @@ var cacheName = 'iBookPWA-final-2';
 var filesToCache = [
   '/',
   '/index.html',
-  '/static/css/main.25b9b51f.css',
-  '/static/js/main.313f1cf6.js',
+  '/static/css/main.25624403.css',
+  '/static/js/main.c5d58c3f.js',
   '/lib/bootstrap-4.0.0-dist/css/bootstrap.min.css',
   '/lib/bootstrap-4.0.0-dist/js/bootstrap.min.js',
   '/lib/fontawesome-free-5.0.8/css/fontawesome-all.min.css',
@@ -14,7 +14,10 @@ var filesToCache = [
   '/lib/popper-1.12.9/popper.min.js',
   '/lib/localForage/localforage.min.js',
   '/lib/ckeditor.js',
+  '/images/comments.png',
+  '/images/comments2.png',
   '/images/default-avatar.png',
+  '/images/devices.png',
   '/images/cover.jpg',
   '/images/logo.png',
   '/images/quotes-left.png',
@@ -145,25 +148,26 @@ self.addEventListener('sync', function(event) {
             })
             .then(createdFile=>{
               console.log("đã tạo file trên drive", createdFile);
-              list_promise_push.push(setBookId(file.id, createdFile.id));
+              list_promise_push.push(setBookDriveId(file.id, createdFile.id));
 
               // update nội dung
-              file.id = createdFile.id;
+              file.drive_id = createdFile.id;
               return updateRemoteFileContent(createdFile.id, JSON.stringify(file));
             });
 
             list_promise_push.push(p);
+            list_promise_push.push(setBookStatusId(file.id, 4));
           } else if (file.status_id === 2) {
             // file đã bị thay đổi => cần đồng bộ
-            var p=updateRemoteFileContent(file.id, JSON.stringify(file));
+            var p=updateRemoteFileContent(file.drive_id, JSON.stringify(file));
             list_promise_push.push(p);
+            list_promise_push.push(setBookStatusId(file.id, 4));
           } else if (file.status_id === 3) {
             //xoá file
-            var p=deleteRemoteFile(file.id);
-            list_promise_push.push(p);
+            var p1=deleteRemoteFile(file.drive_id);
+            var p2=deleteLocalFile(file.id);
+            list_promise_push.push(p1, p2);
           }
-
-          list_promise_push.push(setBookStatusId(file.id, 4));
         });
 
         return Promise.all(list_promise_push);
@@ -195,7 +199,8 @@ self.addEventListener('message', function(event){
 
 /**
  * Cấu trúc 1 sách
- * @property id {string} - id sách (nếu đã được đồng bộ ? current_timestamp : google drive id)
+ * @property id {string} - id sách
+ * @property drive_id {string} - id của file trên google drive
  * @property image {base64 string} - bìa sách
  * @property name {string} - tên sách
  * @property date_created {timestamp} - ngày tạo sách
@@ -203,6 +208,7 @@ self.addEventListener('message', function(event){
  * @property status_id {int} - 1: mới tạo, 2: bị thay đổi nội dung, 3: xoá, 4: đã đồng bộ trên drive
  * @property chapters {array} - chứa các chapter {id, name, content}
  * @property is_share {bool} - đã share chưa
+ * @property is_allow_copy {bool} - cho phép người khác copy
  */
 
 /**
@@ -228,7 +234,7 @@ function setLocalFile(list_books) {
 /**
  * Thêm 1 sách vào local storage
  */
-function downloadFile(id) {
+function downloadFile(drive_id) {
   return new Promise(function(resolve, reject) {
     var list_books, fileIndex;
 
@@ -236,7 +242,7 @@ function downloadFile(id) {
     .then(l=>{
       list_books = l;
 
-      return getRemoteFileContent(id);
+      return getRemoteFileContent(drive_id);
     })
     .then(content=>{
       content = JSON.parse(content);
@@ -244,7 +250,7 @@ function downloadFile(id) {
 
       console.log("download file", content);
 
-      fileIndex=list_books.findIndex(book=>book.id===id);
+      fileIndex=list_books.findIndex(book=>book.id===content.id);
       if(fileIndex === -1){
         list_books.push(content);
         fileIndex = list_books.length - 1;
@@ -252,7 +258,9 @@ function downloadFile(id) {
         list_books[fileIndex] = content;
       }
 
-      return isShare(id);
+      console.log(list_books);
+
+      return isShare(drive_id);
     })
     .then(is_share=>{
       list_books[fileIndex].is_share = is_share;
@@ -266,13 +274,29 @@ function downloadFile(id) {
 /**
  * Thay đổi id của file
  */
-function setBookId(id, driveId) {
+function setBookDriveId(id, driveId) {
   return new Promise(function(resolve, reject) {
     getLocalFile()
     .then(list_books=>{
       var index=list_books.findIndex(book=>book.id.toString()===id.toString());
-      list_books[index].id=driveId;
+      list_books[index].drive_id=driveId;
       list_books[index].status_id = 4;
+
+      return setLocalFile(list_books);
+    })
+    .then(()=>resolve())
+    .catch(err=>reject(err));
+  });
+}
+
+/**
+ * Xoá 1 sách ở local
+ */
+function deleteLocalFile(id) {
+  return new Promise(function(resolve, reject) {
+    getLocalFile()
+    .then(list_books=>{
+      list_books=list_books.filter(book=>book.id.toString()!==id.toString());
 
       return setLocalFile(list_books);
     })
@@ -476,6 +500,7 @@ function isShare(fileId) {
       },
     })
     .then(response => {
+      console.log("is share", response);
       resolve(response.status===200);
     })
     .catch(err=>resolve(false));

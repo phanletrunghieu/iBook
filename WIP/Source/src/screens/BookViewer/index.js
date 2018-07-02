@@ -139,21 +139,18 @@ class BookViewerScreen extends Component {
       <HotKeys keyMap={keyMap} handlers={handlers}>
       <div className="book-viewer-screen" style={styles.container}>
         <header>
-        	<nav className="navbar navbar-expand-lg navbar-light bg-light">
-    		  <Link className="navbar-brand" to="/app"><img src="/images/logo.png"/>Ibook</Link>
-    		  <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-    		    <span className="navbar-toggler-icon"></span>
-    		  </button>
+          <nav className="navbar navbar-expand-lg navbar-light bg-light">
+          <Link className="navbar-brand" to="/app"><img src="/images/logo.png"/>iBook</Link>
 
-    		  <div className="collapse navbar-collapse" id="navbarSupportedContent">
-    		    <ul className="navbar-nav mr-auto">
+          <div className="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul className="navbar-nav mr-auto">
               {
                 this.state.list_books.length > 0 ?
                 <li className="nav-item dropdown">
                   <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-      		        	<i className="fas fa-list"></i>
-      		          Danh sách
-      		        </a>
+                    <i className="fas fa-list"></i>
+                    Danh sách
+                  </a>
 
                   <div className="dropdown-menu" aria-labelledby="navbarDropdown">
                     {
@@ -166,107 +163,107 @@ class BookViewerScreen extends Component {
                 :null
               }
 
-    		      <li className="nav-item dropdown">
-    		        <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    		        	<i className="fas fa-cog"></i>
-    		          Tùy chỉnh
-    		        </a>
-    		        <div className="dropdown-menu" aria-labelledby="navbarDropdown">
-    		          <form className="form-group">
-    		          	<div className="option row">
-    		          		<div className="col-md-5 col-xs-5" htmlFor="truyen-background">Màu nền</div>
-    		          		<div className="col-md-7 col-xs-7">
-    		          			<select className="form-control" id="truyen-background" value={this.state.backgroundColor} onChange={e=>this.setState({backgroundColor: e.target.value})}>
-    			          			<option value="#F4F4F4">Xám nhạt</option>
-    			          			<option value="#E9EBEE">Xanh nhạt</option>
-    			          			<option value="#F4F4E4">Vàng nhạt</option>
-    			          			<option value="#EAE4D3">Màu sepia</option>
-    			          			<option value="#D5D8DC">Xanh đậm</option>
-    			          			<option value="#FAFAC8">Vàng đậm</option>
-    			          			<option value="#EFEFAB">Vàng ố</option>
-    			          			<option value="#FFF">Màu trắng</option>
-    			          			<option value="hatsan">Hạt sạn</option>
-    			          			<option value="#232323">Màu tối</option>
-    		          			</select>
-    		          		</div>
-    		          	</div>
+              <li className="nav-item dropdown">
+                <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <i className="fas fa-cog"></i>
+                  Tùy chỉnh
+                </a>
+                <div className="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <form className="form-group">
+                    <div className="option row">
+                      <div className="col-md-5 col-xs-5" htmlFor="truyen-background">Màu nền</div>
+                      <div className="col-md-7 col-xs-7">
+                        <select className="form-control" id="truyen-background" value={this.state.backgroundColor} onChange={e=>this.setState({backgroundColor: e.target.value})}>
+                          <option value="#F4F4F4">Xám nhạt</option>
+                          <option value="#E9EBEE">Xanh nhạt</option>
+                          <option value="#F4F4E4">Vàng nhạt</option>
+                          <option value="#EAE4D3">Màu sepia</option>
+                          <option value="#D5D8DC">Xanh đậm</option>
+                          <option value="#FAFAC8">Vàng đậm</option>
+                          <option value="#EFEFAB">Vàng ố</option>
+                          <option value="#FFF">Màu trắng</option>
+                          <option value="hatsan">Hạt sạn</option>
+                          <option value="#232323">Màu tối</option>
+                        </select>
+                      </div>
+                    </div>
                     <br/>
-    		          	<div className="option row">
-    		          		<div className="col-md-5" htmlFor="truyen-background">Font chữ</div>
-    		          		<div className="col-md-7">
-    		          			<select className="form-control" id="font-chu" value={this.state.fontFamily} onChange={e=>this.setState({fontFamily: e.target.value})}>
-    		          				<option value="'Palatino Linotype', serif">Palatino Linotype</option>
-    		          				<option value="Bookerly, serif">Bookerly</option>
-    		          				<option value="Minion, serif">Minion</option>
-    		          				<option value="'Segoe UI', sans-serif">Segoe UI</option>
-    		          				<option value="Roboto, sans-serif">Roboto</option>
-    		          				<option value="'Roboto Condensed', sans-serif">Roboto Condensed</option>
-    		          				<option value="'Patrick Hand', sans-serif">Patrick Hand</option>
-    		          				<option value="'Noticia Text', sans-serif">Noticia Text</option>
-    		          				<option value="'Times New Roman', serif">Times New Roman</option>
-    		          				<option value="Verdana, sans-serif">Verdana</option>
-    		          				<option value="Tahoma, sans-serif">Tahoma</option>
-    		          				<option value="Arial, sans-serif">Arial</option>
-    		          			</select>
-    		          		</div>
-    		          	</div>
-    		          	<br/>
-    		          	<div className="option row">
-    		          		<div className="col-md-5" htmlFor="truyen-background">Size chữ</div>
-    		          		<div className="col-md-7">
-    		          			<select className="form-control" id="size-chu" value={this.state.fontSize} onChange={e=>this.setState({fontSize: e.target.value})}>
-    		          				<option value="16px">16</option>
-    		          				<option value="18px">18</option>
-    		          				<option value="20px">20</option>
-    		          				<option value="22px">22</option>
-    		          				<option value="24px">24</option>
-    		          				<option value="26px">26</option>
-    		          				<option value="28px">28</option>
-    		          				<option value="30px">30</option>
-    		          				<option value="32px">32</option>
-    		          				<option value="34px">34</option>
-    		          				<option value="36px">36</option>
-    		          				<option value="38px">38</option>
-    		          				<option value="40px">40</option>
-    		          			</select>
-    		          		</div>
-    		          	</div>
-    		          	<br/>
-    		          	<div className="option row">
-    		          		<div className="col-md-5" htmlFor="truyen-background">Chiều cao dòng</div>
-    		          		<div className="col-md-7">
-    		          			<select className="form-control" id="truyen-background" value={this.state.lineHeight} onChange={e=>this.setState({lineHeight: e.target.value})}>
-    			          			<option value="1">100%</option>
-    			          			<option value="1.2">120%</option>
-    			          			<option value="1.4">140%</option>
-    			          			<option value="1.6">160%</option>
-    		          			</select>
-    		          		</div>
-    		          	</div>
-    		          	<br/>
-    		          </form>
-    		        </div>
-    		      </li>
-    		    </ul>
-    		  </div>
+                    <div className="option row">
+                      <div className="col-md-5" htmlFor="truyen-background">Font chữ</div>
+                      <div className="col-md-7">
+                        <select className="form-control" id="font-chu" value={this.state.fontFamily} onChange={e=>this.setState({fontFamily: e.target.value})}>
+                          <option value="'Palatino Linotype', serif">Palatino Linotype</option>
+                          <option value="Bookerly, serif">Bookerly</option>
+                          <option value="Minion, serif">Minion</option>
+                          <option value="'Segoe UI', sans-serif">Segoe UI</option>
+                          <option value="Roboto, sans-serif">Roboto</option>
+                          <option value="'Roboto Condensed', sans-serif">Roboto Condensed</option>
+                          <option value="'Patrick Hand', sans-serif">Patrick Hand</option>
+                          <option value="'Noticia Text', sans-serif">Noticia Text</option>
+                          <option value="'Times New Roman', serif">Times New Roman</option>
+                          <option value="Verdana, sans-serif">Verdana</option>
+                          <option value="Tahoma, sans-serif">Tahoma</option>
+                          <option value="Arial, sans-serif">Arial</option>
+                        </select>
+                      </div>
+                    </div>
+                    <br/>
+                    <div className="option row">
+                      <div className="col-md-5" htmlFor="truyen-background">Size chữ</div>
+                      <div className="col-md-7">
+                        <select className="form-control" id="size-chu" value={this.state.fontSize} onChange={e=>this.setState({fontSize: e.target.value})}>
+                          <option value="16px">16</option>
+                          <option value="18px">18</option>
+                          <option value="20px">20</option>
+                          <option value="22px">22</option>
+                          <option value="24px">24</option>
+                          <option value="26px">26</option>
+                          <option value="28px">28</option>
+                          <option value="30px">30</option>
+                          <option value="32px">32</option>
+                          <option value="34px">34</option>
+                          <option value="36px">36</option>
+                          <option value="38px">38</option>
+                          <option value="40px">40</option>
+                        </select>
+                      </div>
+                    </div>
+                    <br/>
+                    <div className="option row">
+                      <div className="col-md-5" htmlFor="truyen-background">Chiều cao dòng</div>
+                      <div className="col-md-7">
+                        <select className="form-control" id="truyen-background" value={this.state.lineHeight} onChange={e=>this.setState({lineHeight: e.target.value})}>
+                          <option value="1">100%</option>
+                          <option value="1.2">120%</option>
+                          <option value="1.4">140%</option>
+                          <option value="1.6">160%</option>
+                        </select>
+                      </div>
+                    </div>
+                    <br/>
+                  </form>
+                </div>
+              </li>
+            </ul>
+          </div>
 
           <ul className="navbar-nav flex-row ml-md-auto d-none d-md-flex">
             <li className="nav-item">
               <Link className="nav-link p-2" to={"/app/book/"+this.props.match.params.bookId+"/"+this.props.match.params.chapterId}>Write mode</Link>
             </li>
           </ul>
-    		</nav>
+        </nav>
         </header>
         <content>
-        	<div className="container">
-        		<div className="title">
-        			<div className="book-name">
-        				<center>{this.state.name}</center>
-        			</div>
-        			<div className="book-chapter">
-        				<center>{chapter.name}</center>
-        			</div>
-        		</div>
+          <div className="container">
+            <div className="title">
+              <div className="book-name">
+                <center>{this.state.name}</center>
+              </div>
+              <div className="book-chapter">
+                <center>{chapter.name}</center>
+              </div>
+            </div>
             <center>
               <div className="btn-group btn-nav">
                 <a onClick={this.prevChapter} style={styles.prevButton}>
@@ -306,7 +303,7 @@ class BookViewerScreen extends Component {
                 </a>
               </div>
             </center>
-        	</div>
+          </div>
         </content>
 
         <Snackbar

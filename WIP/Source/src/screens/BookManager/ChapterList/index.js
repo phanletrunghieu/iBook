@@ -157,13 +157,6 @@ class ChapterListScreen extends Component {
       },
     };
 
-    var pathname = this.props.location.pathname;
-    //right trim
-    if (pathname.substring(pathname.length-1)==="/") {
-      pathname = pathname.substring(0, pathname.length);
-    }
-    var is_home = pathname==="/app";
-
     const actionsAddChapter = [
       <FlatButton
         label="Cancel"
@@ -198,11 +191,9 @@ class ChapterListScreen extends Component {
           style={{position: 'fixed', top: 0}}
           iconElementLeft={
             <IconButton
-              onClick={is_home ? this.toggleDrawer : ()=>browserHistory.goBack()}
+              onClick={()=>browserHistory.push("/app")}
             >
-              {
-                is_home ? <NavigationMenuIcon/> : <ArrowBackIcon />
-              }
+              <ArrowBackIcon />
             </IconButton>
           }
           iconElementRight={

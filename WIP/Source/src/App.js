@@ -38,7 +38,7 @@ class App extends Component {
           <div>
             <Route exact path="/" component={HomeScreen}/>
             <Route exact path="/book/:bookId/:chapterId" render={(props)=><BookViewerScreen {...props} />} />
-            <Route exact path="/view/book/:bookId" render={(props)=><UserBookViewerScreen {...props} />} />
+            <Route exact path="/view/book/:bookDriveId" render={(props)=><UserBookViewerScreen {...props} />} />
             <Route path="/app" component={BookManagerScreen}/>
           </div>
         </Router>

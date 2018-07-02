@@ -6,7 +6,8 @@ const KEY_BOOK = 'list_books';
 
 /**
  * Cấu trúc 1 sách
- * @property id {string} - id sách (nếu đã được đồng bộ ? current_timestamp : google drive id)
+ * @property id {string} - id sách
+ * @property drive_id {string} - id của file trên google drive
  * @property image {base64 string} - bìa sách
  * @property name {string} - tên sách
  * @property author {string} - tác giả sách
@@ -16,8 +17,15 @@ const KEY_BOOK = 'list_books';
  * @property status_id {int} - 1: mới tạo, 2: bị thay đổi nội dung, 3: xoá, 4: đã đồng bộ trên drive
  * @property chapters {array} - chứa các chapter {id, name, content}
  * @property is_share {bool} - đã share chưa
+ * @property is_allow_copy {bool} - cho phép người khác copy
  */
 
+/**
+ * Xoá tất cả dữ liệu về sách
+ */
+ export function clearBookInfo() {
+   localforage.removeItem(KEY_BOOK);
+ }
 
 /**
  * Lấy tất cả sách
@@ -107,9 +115,28 @@ export function addBook(name) {
       }],
       date_created: now,
       date_modified: now,
+      is_share: false,
+      is_allow_copy: false,
       status_id: 1,
     });
 
+    return setBooksData(list_books);
+  });
+}
+
+/**
+ * Copy 1 sách của người khác
+ */
+export function cloneBook(book) {
+  return getBooksData()
+  .then(list_books=>{
+    var now = Date.now();
+    book.date_created = now;
+    book.date_modified = now;
+    book.status_id = 1;
+    book.is_share = false;
+    book.is_allow_copy = false;
+    list_books.push(book);
     return setBooksData(list_books);
   });
 }
@@ -226,6 +253,9 @@ export function updateBook(book_id, new_data) {
   });
 }
 
+/**
+ * enable/disable share book
+ */
 export function shareBook(book_id, is_share) {
   return getBooksData()
   .then(list_books=>{
@@ -233,5 +263,21 @@ export function shareBook(book_id, is_share) {
     list_books[index].is_share = is_share;
 
     return setBooksData(list_books, false);
+  });
+}
+
+/**
+ * allow/disallow copy book
+ */
+export function allowCopyBook(book_id, is_allow_copy) {
+  return getBooksData()
+  .then(list_books=>{
+    var index=list_books.findIndex(book=>book.id.toString() === book_id.toString());
+    list_books[index].is_allow_copy = is_allow_copy;
+
+    if(list_books[index].status_id!==1)
+      list_books[index].status_id = 2;
+
+    return setBooksData(list_books);
   });
 }

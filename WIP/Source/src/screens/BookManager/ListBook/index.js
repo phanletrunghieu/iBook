@@ -18,7 +18,7 @@ import ConfirmBox from "../../../components/ConfirmBox";
 
 import browserHistory from "../../../utils/browserHistory";
 
-import {addBook, getBooksData, deleteBook, shareBook} from "../../../api/BookAPI";
+import {addBook, getBooksData, deleteBook, shareBook, allowCopyBook} from "../../../api/BookAPI";
 import GoogleDriveAPI from '../../../api/GoogleDriveAPI';
 import {formatDate, getHomeUrl, copyTextToClipboard} from "../../../utils/helper"
 
@@ -43,6 +43,7 @@ class ListBookScreen extends Component {
     this.loadData = this.loadData.bind(this);
     this.onShareBook = this.onShareBook.bind(this);
     this.onUnShareBook = this.onUnShareBook.bind(this);
+    this.onAllowCopy = this.onAllowCopy.bind(this);
     this.onEditBook = this.onEditBook.bind(this);
     this.onViewBook = this.onViewBook.bind(this);
     this.onCopyLink = this.onCopyLink.bind(this);
@@ -99,18 +100,18 @@ class ListBookScreen extends Component {
   }
 
   onCopyLink(book){
-    var url = getHomeUrl()+"/view/book/"+book.id;
+    var url = getHomeUrl()+"/view/book/"+book.drive_id;
     copyTextToClipboard(url);
     this.LinkDialog.show(url);
   }
 
   onShareBook(book){
-    if (book.status_id!==4) {
+    if (!book.drive_id) {
       //nếu chưa đồng bộ
       return this.setState({snackbarMessage: "This book is not sync to server."});
     }
 
-    GoogleDriveAPI.enableShare(book.id)
+    GoogleDriveAPI.enableShare(book.drive_id)
     .then(()=>{
       //đánh dâu ở local là đã share
       return shareBook(book.id, true);
@@ -118,7 +119,7 @@ class ListBookScreen extends Component {
     .then(bookdata=>{
       this.loadData();
 
-      var url = getHomeUrl()+"/view/book/"+book.id;
+      var url = getHomeUrl()+"/view/book/"+book.drive_id;
       copyTextToClipboard(url);
       this.setState({snackbarMessage: "Link is copied."});
 
@@ -130,12 +131,12 @@ class ListBookScreen extends Component {
   }
 
   onUnShareBook(book){
-    if (book.status_id!==4) {
+    if (!book.drive_id) {
       //nếu chưa đồng bộ
       return this.setState({snackbarMessage: "This book is not sync to server."});
     }
 
-    GoogleDriveAPI.disableShare(book.id)
+    GoogleDriveAPI.disableShare(book.drive_id)
     .then(()=>{
       //đánh dâu ở local là đã share
       return shareBook(book.id, false);
@@ -143,6 +144,22 @@ class ListBookScreen extends Component {
     .then(bookdata=>{
       this.loadData();
       this.setState({snackbarMessage: "Disable share."});
+    })
+    .catch(err=>{
+      this.setState({snackbarMessage: "Fail."});
+    });
+  }
+
+  onAllowCopy(book, is_allow_copy){
+    if (!book.drive_id) {
+      //nếu chưa đồng bộ
+      return this.setState({snackbarMessage: "This book is not sync to server."});
+    }
+
+    allowCopyBook(book.id, is_allow_copy)
+    .then(()=>{
+      this.loadData();
+      this.setState({snackbarMessage: is_allow_copy ? "Allow copy." : "Not allow copy."});
     })
     .catch(err=>{
       this.setState({snackbarMessage: "Fail."});
@@ -230,6 +247,7 @@ class ListBookScreen extends Component {
           >
             <MenuItem primaryText="View" onClick={()=>this.onViewBook(book)} />
             <MenuItem primaryText={book.is_share ? "Unshare" : "Share"} onClick={book.is_share ? ()=>this.onUnShareBook(book) : ()=>this.onShareBook(book)} />
+            <MenuItem primaryText={book.is_allow_copy ? "Don't allow copy" : "Allow copy"} onClick={()=>this.onAllowCopy(book, !book.is_allow_copy)} />
             {
               book.is_share ?
               <MenuItem primaryText="Copy link" onClick={()=>this.onCopyLink(book)} />
