@@ -20,6 +20,7 @@ import BookEditorScreen from './BookEditor';
 import BookViewerScreen from './BookViewer';
 import ChapterListScreen from './ChapterList';
 import SettingScreen from './Setting';
+import AboutScreen from './About';
 
 import config from '../../config';
 
@@ -187,7 +188,15 @@ class BookManagerScreen extends Component {
           >
             Settings
           </MenuItem>
-          <MenuItem leftIcon={<InfoIcon/>}>About</MenuItem>
+          <MenuItem
+            leftIcon={<InfoIcon/>}
+            onClick={()=>{
+              browserHistory.push('/app/about');
+              this.setState({openDrawer: false});
+            }}
+          >
+            About
+          </MenuItem>
         </Drawer>
 
         <div style={{marginTop: 64}}>
@@ -196,6 +205,7 @@ class BookManagerScreen extends Component {
             <Route exact path="/app/book/:bookId/:chapterId" render={(props)=><BookEditorScreen {...props} />} />
             <Route exact path="/app/book/:bookId" render={(props)=><ChapterListScreen {...props} />} />
             <Route exact path="/app/setting" render={(props)=><SettingScreen {...props} />} />
+            <Route exact path="/app/about" render={(props)=><AboutScreen {...props} />} />
           </Switch>
         </div>
       </div>

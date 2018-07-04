@@ -79,6 +79,12 @@ class ListBookScreen extends Component {
   }
 
   onAddNewBook(){
+    if (!this.state.newBookName) {
+      return this.setState({
+        snackbarMessage: "The book's name mustn't be empty.",
+      });
+    }
+
     addBook(this.state.newBookName)
     .then(()=>{
       this.setState({
